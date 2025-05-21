@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TvPreviewComponent } from './tv-preview/tv-preview.component';
+import { TvsPreviewComponent } from './tvs-preview/tvs-preview.component';
 import { TvEditComponent } from './tv-edit/tv-edit.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [TvPreviewComponent, TvEditComponent],
+  imports: [TvsPreviewComponent, TvEditComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

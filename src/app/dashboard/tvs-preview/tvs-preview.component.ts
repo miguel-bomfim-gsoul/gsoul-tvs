@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-tv-preview',
+  selector: 'app-tvs-preview',
   imports: [],
-  templateUrl: './tv-preview.component.html',
-  styleUrl: './tv-preview.component.css'
+  templateUrl: './tvs-preview.component.html',
+  styleUrl: './tvs-preview.component.css'
 })
 
-export class TvPreviewComponent {
+export class TvsPreviewComponent {
   @Input({ required: true }) tv!: {
     id: string;
     name: string;
