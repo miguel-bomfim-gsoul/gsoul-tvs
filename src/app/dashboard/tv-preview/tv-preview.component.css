@@ -33,5 +33,16 @@
 }
 
 .tv-action-buttons button {
+    cursor: pointer;
+    border: 1px solid #000;
+    border-radius: 12px;
     padding: 4px 8px;
+}
+
+.tv-action-buttons button:first-child {
+    background-color: #fff7e2;
+}
+
+.tv-action-buttons button:last-child {
+    background-color: #dceafc;
 }

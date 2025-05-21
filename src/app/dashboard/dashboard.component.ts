@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TvPreviewComponent } from './tv-preview/tv-preview.component';
 
 @Component({
@@ -9,7 +10,13 @@ import { TvPreviewComponent } from './tv-preview/tv-preview.component';
 })
 
 export class DashboardComponent {
-  @Input({ required: true }) tvs!: {
+  constructor(private route: ActivatedRoute) {
+  this.route.data.subscribe(data => {
+      this.tvs = data['tvs'];
+    });
+  }
+
+  tvs!: {
   id: number;
   name: string;
   images: string[];
