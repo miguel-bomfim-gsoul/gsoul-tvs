@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TvComponent } from './tv/tv.component';
 
 const tvs = [
     {
@@ -37,6 +38,11 @@ export const routes: Routes = [
     {
       path: 'dashboard',
       component: DashboardComponent,
+      data: { tvs },
+    },
+    {
+      path: 'tv/:name',
+      component: TvComponent,
       data: { tvs },
     }
 ];
