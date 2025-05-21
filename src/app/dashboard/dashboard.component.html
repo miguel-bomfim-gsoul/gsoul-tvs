@@ -1,1 +1,12 @@
-<p>dashboard works!</p>
+<section class="dashboard">
+    <img src="assets/logo-gsoul.png" alt="Logo grupo soul" />
+
+    <button (click)="addTv()">Add +</button>
+    <ul>
+        @for (tv of tvs; track tv.id) {
+            <li>
+                <app-tv-preview [tv]="tv" />
+            </li>
+        }
+    </ul>
+</section>

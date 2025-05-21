@@ -1,0 +1,14 @@
+<div class="tv-preview">
+    <span>{{tv.name}}</span>
+
+    <div class="tv-thumbnail">
+        @for (image of tv.images; track $index) {
+            <img src="{{image}}" alt="TV Image {{ $index + 1 }}" />
+        }
+    </div>
+   
+    <div class="tv-action-buttons">
+        <button>Edit</button>
+        <button>View</button>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+.dashboard {
+    padding: 32px;
+}
+
+.dashboard img {
+    display: block;
+    margin: auto;
+    width: 150px;
+}
+
+.dashboard button {
+    padding: 6px;
+    margin-bottom: 32px;
+}
+
+.dashboard ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+
+}
+
+@media (max-width: 760px) {
+    .dashboard ul {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
