@@ -1,0 +1,39 @@
+<section class="tv-edit">
+    <h2>
+        {{selectedTv?.name}}
+    </h2>
+
+    <ul>
+        @for (image of selectedTv?.images; track image) {
+            <li class="tv-edit-media">
+                <img [src]="image" alt="media tv">
+                <span class="date-inputs">
+                    <label for="initialDate">Data Inicial:
+                        <input type="datetime-local" id="initialDate" name="initialDate">
+                    </label>
+                    <label for="finalDate">Data Final:
+                        <input type="datetime-local" id="finalDate" name="finalDate">
+                    </label>
+                </span>
+
+                <span class="tv-edit-checkboxes">
+                    <span>
+                        <input type="checkbox" id="tv1" name="tv1" value="Bike">
+                        <label for="tv1">Marketing</label>
+                    </span>
+
+                    <span>
+                        <input type="checkbox" id="tv2" name="tv2" value="Car">
+                        <label for="tv2">Controladoria</label><br>
+                    </span>
+
+                    <span>
+                        <input type="checkbox" id="tv3" name="tv3" value="Boat">
+                        <label for="tv3">RH</label>
+                    </span>
+                </span>
+
+            </li>
+        }
+    </ul>
+</section>

@@ -1,12 +1,19 @@
 <section class="dashboard">
-    <img src="assets/logo-gsoul.png" alt="Logo grupo soul" />
+    <img width="150px" height="96.09px" src="assets/logo-gsoul.png" alt="Logo grupo soul" />
 
-    <button (click)="addTv()">Add +</button>
-    <ul>
-        @for (tv of tvs; track tv.id) {
-            <li>
-                <app-tv-preview [tv]="tv" />
-            </li>
-        }
-    </ul>
+    @if (isEditing) {
+        <button (click)="toggleEdit()">
+            &lt;
+        </button>
+        <app-tv-edit [selectedTv]="selectedTv" />
+    } @else {
+        <button (click)="addTv()">Add +</button>
+        <ul>
+            @for (tv of tvs; track tv.id) {
+                <li>
+                    <app-tv-preview [tv]="tv" (edit)="onSelectTvEdit($event)"/>
+                </li>
+            }
+        </ul>
+    }
 </section>

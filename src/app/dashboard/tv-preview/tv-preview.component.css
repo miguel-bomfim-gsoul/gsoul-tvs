@@ -18,6 +18,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     padding: 16px;
+    background-color: #fffff9;
 }
 
 .tv-thumbnail img {

@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { } from '@angular/router';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-tv-preview',
@@ -10,8 +9,15 @@ import { } from '@angular/router';
 
 export class TvPreviewComponent {
   @Input({ required: true }) tv!: {
-    id: number;
+    id: string;
     name: string;
     images: string[];
   };
+
+  @Output() edit = new EventEmitter()
+
+  onClickEdit() {
+    this.edit.emit(this.tv.id)
+  }
 }
+
