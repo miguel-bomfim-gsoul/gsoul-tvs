@@ -1,8 +1,14 @@
-# GsoulTvs
+## Backend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
+To start a local development server, run:
 
-## Development server
+```bash
+npm start
+```
+
+Once the server is running you can test it in: `http://localhost:3000/`.
+
+## Frontend
 
 To start a local development server, run:
 
