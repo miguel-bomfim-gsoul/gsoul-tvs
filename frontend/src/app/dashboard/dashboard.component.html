@@ -2,7 +2,7 @@
     <img width="150px" height="96.09px" src="assets/logo-gsoul.png" alt="Logo grupo soul" />
 
     @if (isFetching() && !error()) {
-        <p style="text-align: center; margin-top: 24px;">Fetching available Tvs...</p>
+        <mat-spinner style="margin: auto; margin-top: 200px;"></mat-spinner>
     }
 
     @if (error()) {

@@ -1,3 +1,12 @@
+.tv-title {
+    font-weight: 400;
+    text-transform: uppercase;
+    text-align: center;
+    width: 300px;
+    margin: auto;
+    padding: 4px;
+}
+
 .tv-preview {
     display: flex;
     flex-direction: column;
@@ -5,20 +14,44 @@
     align-items: center;
 }
 
-.tv-preview span {
-    font-weight: 600;
-}
-
 .tv-thumbnail {
-    width: 300px;
-    height: 200px;
-    border: 1px solid #000;
-    border-radius: 4px;
+    width: 325px;
+    height: 175px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     padding: 16px;
     background-color: #fffff9;
+    border: 3px solid #111;
+    border-radius: 10px;
+    box-shadow:
+        0 0 5px rgba(0, 0, 0, 0.5),
+        inset 0 0 5px rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+
+.tv-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tv-stand {
+  width: 50px;
+  height: 15px;
+  background-color: #222;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.tv-base {
+  width: 150px;
+  height: 8px;
+  background: linear-gradient(to top, #222, #333);
+  border-radius: 8px;
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .tv-thumbnail img {
@@ -27,23 +60,7 @@
     object-fit: cover;
 }
 
-.tv-action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
-.tv-action-buttons button {
-    cursor: pointer;
-    border: 1px solid #000;
-    border-radius: 12px;
-    padding: 4px 8px;
-}
-
-.tv-action-buttons button:first-child {
-    background-color: #fff7e2;
-}
-
-.tv-action-buttons button:last-child {
-    background-color: #dceafc;
+.button-row {
+  display: flex;
+  gap: 12px;
 }

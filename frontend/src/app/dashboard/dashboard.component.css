@@ -6,6 +6,7 @@
     display: block;
     margin: auto;
     width: 150px;
+    margin-bottom: 32px;
 }
 
 .dashboard button {
@@ -16,7 +17,7 @@
 .dashboard ul {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    gap: 50px;
 
 }
 

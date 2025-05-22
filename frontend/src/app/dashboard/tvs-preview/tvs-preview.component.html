@@ -1,14 +1,18 @@
+<h3 class="tv-title">{{tv.name}}</h3>
 <div class="tv-preview">
-    <span>{{tv.name}}</span>
-
-    <div class="tv-thumbnail">
-        @for (image of tv.images; track $index) {
-            <img src="{{image.url_image}}" alt="TV Image {{ $index + 1 }}" />
-        }
+    <div class="tv-wrapper">
+    <div class="tv-thumbnail teste">
+            @for (image of tv.images; track $index) {
+                <img src="{{image.url_image}}" alt="TV Image {{ $index + 1 }}" />
+            }
     </div>
+    <div class="tv-stand"></div>
+    <div class="tv-base"></div>
+    </div>
+    
    
-    <div class="tv-action-buttons">
-        <button (click)="onClickEdit()">Edit</button>
-        <button>View</button>
+    <div class="button-row">
+        <button (click)="onClickEdit()" mat-stroked-button><mat-icon>edit</mat-icon>Editar</button>
+        <button mat-flat-button><mat-icon>open_in_new</mat-icon>Ver</button>
     </div>
 </div>

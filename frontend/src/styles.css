@@ -2,12 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
-body {
-    background-color: #fffdef;
-}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, sans-serif; }
 
 ul {
     list-style-type: none;
