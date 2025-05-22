@@ -1,15 +1,23 @@
 <section class="dashboard">
     <img width="150px" height="96.09px" src="assets/logo-gsoul.png" alt="Logo grupo soul" />
 
+    @if (isFetching() && !error()) {
+        <p style="text-align: center; margin-top: 24px;">Fetching available Tvs...</p>
+    }
+
+    @if (error()) {
+        <p style="text-align: center; margin-top: 24px;">{{ error() }}</p>
+    }
+
     @if (isEditing) {
         <button (click)="toggleEdit()">
             &lt;
         </button>
         <app-tv-edit [selectedTv]="selectedTv" />
     } @else {
-        <button (click)="addTv()">Add +</button>
+        <!-- <button (click)="addTv()">Add +</button> -->
         <ul>
-            @for (tv of tvs; track tv.id) {
+            @for (tv of tvs(); track tv.id) {
                 <li>
                     <app-tvs-preview [tv]="tv" (edit)="onSelectTvEdit($event)"/>
                 </li>

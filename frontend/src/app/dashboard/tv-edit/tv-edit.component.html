@@ -6,7 +6,7 @@
     <ul>
         @for (image of selectedTv?.images; track image) {
             <li class="tv-edit-media">
-                <img [src]="image" alt="media tv">
+                <img [src]="image.url_image" alt="media tv">
                 <span class="date-inputs">
                     <label for="initialDate">Data Inicial:
                         <input type="datetime-local" id="initialDate" name="initialDate">

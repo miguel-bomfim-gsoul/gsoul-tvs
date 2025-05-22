@@ -3,7 +3,7 @@
 
     <div class="tv-thumbnail">
         @for (image of tv.images; track $index) {
-            <img src="{{image}}" alt="TV Image {{ $index + 1 }}" />
+            <img src="{{image.url_image}}" alt="TV Image {{ $index + 1 }}" />
         }
     </div>
    
