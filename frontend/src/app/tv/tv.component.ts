@@ -26,14 +26,14 @@ export class TvComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const id = params.get('name');
+      const slug = params.get('tv_slug');
 
-      if (id) {
+      if (slug) {
         const subscription = this.httpClient
-          .get<{ url_image: string }[]>(`http://localhost:3000/media/${id}`)
+          .get<{ url: string }[]>(`http://localhost:3000/media/${slug}`)
           .subscribe({
             next: (resData) => {
-              this.images.set(resData.map(image => image.url_image));
+              this.images.set(resData.map(image => image.url));
             },
             complete: () => {
               this.startCarousel();

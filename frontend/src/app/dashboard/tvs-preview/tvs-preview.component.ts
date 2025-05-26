@@ -11,6 +11,7 @@ interface MediaType {
 interface TvType {
   id: number
   name: string
+  tv_slug: string
   images?: MediaType[]
 }
 
@@ -27,6 +28,10 @@ export class TvsPreviewComponent {
 
   onClickEdit() {
     this.edit.emit(this.tv.id)
+  }
+
+  onClickViewTv() {
+    window.open(`/tv/${this.tv.tv_slug}`, '_blank');
   }
 }
 

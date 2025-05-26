@@ -9,6 +9,7 @@ interface MediaType {
 interface TvType {
   id: number
   name: string
+  tv_slug: string
   images?: MediaType[]
 }
 

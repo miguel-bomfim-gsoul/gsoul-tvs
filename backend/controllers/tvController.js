@@ -15,6 +15,7 @@ export async function getallTVs (req, res) {
         SELECT
             tvs.id AS tv_id,
             tvs.name,
+            tvs.tv_slug,
             media.id AS image_id,
             media.url_image,
             media.media_order 
@@ -29,12 +30,13 @@ export async function getallTVs (req, res) {
 
         const tvs = {};
         results.forEach((row) => {
-            const { tv_id, name, image_id, url_image, media_order } = row;
+            const { tv_id, name, tv_slug, image_id, url_image, media_order } = row;
 
             if (!tvs[tv_id]) {
                 tvs[tv_id] = {
                     id: tv_id,
                     name,
+                    tv_slug,
                     images: []
                 };
             }

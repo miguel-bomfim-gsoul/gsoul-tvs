@@ -11,7 +11,7 @@ export const routes: Routes = [
       component: DashboardComponent
     },
     {
-      path: 'tv/:name',
+      path: 'tv/:tv_slug',
       component: TvComponent      
     }
 ];
