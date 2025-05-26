@@ -2,7 +2,8 @@ import db from '../db.js';
 
 export async function addTv (req, res){
     const { name } = req.body;
-    db.query('INSERT INTO tvs VALUES(0, ?)', [name], (err, result) => {
+    const tv_slug = name.toLocaleLowerCase().replace(/\s/g, "-");
+    db.query('INSERT INTO tvs VALUES(0, ?, ?)', [name, tv_slug], (err, result) => {
         if (err) {
             return res.status(500).json({ error: err });
         }
@@ -13,7 +14,7 @@ export async function addTv (req, res){
 export async function getallTVs (req, res) {
     const query = `
         SELECT
-            tvs.id AS tv_id,
+            tvs.id AS tv_id,    
             tvs.name,
             tvs.tv_slug,
             media.id AS image_id,

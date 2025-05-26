@@ -9,8 +9,20 @@
         <p style="text-align: center; margin-top: 24px;">{{ error() }}</p>
     }
 
+    <button (click)="isEditing ? toggleEdit() : addTv()" mat-flat-button>
+        @if (isEditing) {
+            <span class="action-button">
+                <mat-icon>chevron_left</mat-icon>Voltar
+            </span>
+        } @else {
+            <span class="action-button">
+                <mat-icon >add</mat-icon>Adicionar TV
+            </span>
+        }
+    </button>
+    
     @if (isEditing) {
-        <button (click)="toggleEdit()" mat-flat-button><mat-icon >chevron_left</mat-icon>Voltar</button>
+        
         <app-tv-edit [selectedTv]="selectedTv" />
     } @else {
         <!-- <button (click)="addTv()">Add +</button> -->

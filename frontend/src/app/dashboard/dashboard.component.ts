@@ -62,15 +62,23 @@ export class DashboardComponent implements OnInit {
     this.isEditing = !this.isEditing;
   }
 
-  // addTv() {
-  //   this.tvs?.push({
-  //     id: `${this.tvs.length + 1}`,
-  //     name: `Nova-TV-${(this.tvs.length + 1)}`,
-  //     images: [
-  //       'https://images.unsplash.com/photo-1747607176057-175b357ef4ab?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  //     ]
-  //   });
-  // }
+  reqBody = {
+    name: 'teste'
+  }
+
+  addTv() {
+    this.httpClient.post('http://localhost:3000/tvs', this.reqBody)
+      .subscribe({
+        next: (resData) => {
+          console.log('TV added successfully:', resData);
+          this.ngOnInit(); // Refresh the list after adding a new TV
+        },
+        error: (error) => {
+          console.error('Error adding TV:', error);
+          this.error.set('! Something went wrong while adding TV !');
+        }
+      });
+  }
 
   onSelectTvEdit(id: string) {
     this.selectedTvId = id
