@@ -49,6 +49,31 @@
     overflow-x: hidden;
 }
 
+
+.related-tvs-container {
+    display: flex;
+    gap: 32px;
+    overflow: hidden;
+}
+
+.related-tvs-names {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.related-tvs-names * {
+    height: 75px;
+    display: flex;
+}
+
+.related-tvs-order {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
 .linked-tv-button {
     display: flex;
     align-items: center;

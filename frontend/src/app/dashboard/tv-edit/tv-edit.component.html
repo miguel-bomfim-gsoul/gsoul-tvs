@@ -30,9 +30,16 @@
 
                 <mat-drawer-container class="drawer-container" autosize >
                     <mat-drawer #drawer class="drawer-sidenav" mode="side" position="end">
-                        @for (tvs of tvsList; track tvs) {
-                            <mat-checkbox>
-                                {{tvs}}
+                        <div class="related-tvs-container">
+                            <div class="related-tvs-names">
+                                @for (tvs of tvsList; track tvs) {
+                                    <mat-checkbox>
+                                        {{tvs}}
+                                    </mat-checkbox>
+                                }
+                            </div>
+                            <div class="related-tvs-order">
+                                @for (tvs of tvsList; track tvs) {
                                 <mat-form-field class="slide-order">
                                     <mat-label>Ordem</mat-label>
                                     <mat-select>
@@ -41,8 +48,9 @@
                                         }
                                     </mat-select>
                                 </mat-form-field>
-                            </mat-checkbox>
-                        }
+                                }
+                            </div>
+                        </div>
                     </mat-drawer>
 
                     <div class="drawer-sidenav-content">
