@@ -1,4 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tv',
@@ -6,29 +8,43 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   templateUrl: './tv.component.html',
   styleUrl: './tv.component.css'
 })
-export class TvComponent implements OnInit, OnDestroy {
-  images: string[] = [
-    'https://picsum.photos/id/1015/1920/1080',
-    'https://picsum.photos/id/1016/1920/1080',
-    'https://picsum.photos/id/1018/1920/1080',
-    'https://picsum.photos/id/1019/1920/1080',
-    'https://picsum.photos/id/1020/1920/1080'
-  ];
+export class TvComponent implements OnInit {
+  images = signal<string[]>([]);
+
   currentIndex = 0;
   intervalId: any;
-  delay = 10000; // 5 seconds
-
-  ngOnInit() {
-    this.startCarousel();
-  }
+  delay = 3000;
+  private httpClient = inject(HttpClient);
+  private destroyRef = inject(DestroyRef)
+  private route = inject(ActivatedRoute);
 
   startCarousel() {
-    this.intervalId = setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.images.length;
-    }, this.delay);
+  this.intervalId = setInterval(() => {
+    this.currentIndex = (this.currentIndex + 1) % this.images().length;
+  }, this.delay);
   }
 
-  ngOnDestroy() {
-    clearInterval(this.intervalId);
+  ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('name');
+
+      if (id) {
+        const subscription = this.httpClient
+          .get<{ url_image: string }[]>(`http://localhost:3000/media/${id}`)
+          .subscribe({
+            next: (resData) => {
+              this.images.set(resData.map(image => image.url_image));
+            },
+            complete: () => {
+              this.startCarousel();
+            }
+          });
+
+        this.destroyRef.onDestroy(() => {
+          subscription.unsubscribe();
+          clearInterval(this.intervalId);
+        });
+      }
+    });
   }
 }
