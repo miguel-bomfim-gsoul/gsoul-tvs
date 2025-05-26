@@ -10,9 +10,7 @@
     }
 
     @if (isEditing) {
-        <button (click)="toggleEdit()">
-            &lt;
-        </button>
+        <button (click)="toggleEdit()" mat-flat-button><mat-icon >chevron_left</mat-icon>Voltar</button>
         <app-tv-edit [selectedTv]="selectedTv" />
     } @else {
         <!-- <button (click)="addTv()">Add +</button> -->

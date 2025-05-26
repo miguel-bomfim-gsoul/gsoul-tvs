@@ -5,34 +5,58 @@
 
     <ul>
         @for (image of selectedTv?.images; track image) {
-            <li class="tv-edit-media">
+            <li class="tv-edit-item">
                 <img [src]="image.url_image" alt="media tv">
-                <span class="date-inputs">
-                    <label for="initialDate">Data Inicial:
-                        <input type="datetime-local" id="initialDate" name="initialDate">
-                    </label>
-                    <label for="finalDate">Data Final:
-                        <input type="datetime-local" id="finalDate" name="finalDate">
-                    </label>
-                </span>
 
-                <span class="tv-edit-checkboxes">
-                    <span>
-                        <input type="checkbox" id="tv1" name="tv1" value="Bike">
-                        <label for="tv1">Marketing</label>
-                    </span>
+                <mat-form-field class="slide-order">
+                    <mat-label>Ordem</mat-label>
+                    <mat-select>
+                        @for (ordem of ordens; track ordem) {
+                        <mat-option [value]="ordem">{{ordem}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                
+                <mat-form-field>
+                    <mat-label>Selecione o período de exibição</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matStartDate placeholder="Data inicial">
+                        <input matEndDate placeholder="Data final">
+                    </mat-date-range-input>
+                    <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
 
-                    <span>
-                        <input type="checkbox" id="tv2" name="tv2" value="Car">
-                        <label for="tv2">Controladoria</label><br>
-                    </span>
+                <mat-drawer-container class="drawer-container" autosize >
+                    <mat-drawer #drawer class="drawer-sidenav" mode="side" position="end">
+                        @for (tvs of tvsList; track tvs) {
+                            <mat-checkbox>
+                                {{tvs}}
+                                <mat-form-field class="slide-order">
+                                    <mat-label>Ordem</mat-label>
+                                    <mat-select>
+                                        @for (ordem of ordens; track ordem) {
+                                        <mat-option [value]="ordem">{{ordem}}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            </mat-checkbox>
+                        }
+                    </mat-drawer>
 
-                    <span>
-                        <input type="checkbox" id="tv3" name="tv3" value="Boat">
-                        <label for="tv3">RH</label>
-                    </span>
-                </span>
-
+                    <div class="drawer-sidenav-content">
+                        <button type="button" mat-flat-button (click)="drawer.toggle()">
+                            @if(drawer.opened) {
+                                <p>X</p>
+                            } @else {
+                                <span class="linked-tv-button">
+                                    <mat-icon>link</mat-icon>TVs Relacionadas
+                                </span>
+                            }
+                        </button>
+                    </div>
+                </mat-drawer-container>
             </li>
         }
     </ul>

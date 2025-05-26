@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { TvsPreviewComponent } from './tvs-preview/tvs-preview.component';
 import { TvEditComponent } from './tv-edit/tv-edit.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 interface MediaType {
   id: number
@@ -19,7 +21,7 @@ interface TvType {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [TvsPreviewComponent, TvEditComponent, MatProgressSpinnerModule],
+  imports: [TvsPreviewComponent, TvEditComponent, MatProgressSpinnerModule, MatButtonModule, MatIconModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
