@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { MidiasComponent } from './dashboard/midias/midias.component'
 import { TvComponent } from './tv/tv.component';
 
 export const routes: Routes = [
@@ -13,5 +14,9 @@ export const routes: Routes = [
     {
       path: 'tv/:tv_slug',
       component: TvComponent      
+    },
+    {
+      path: 'dashboard/midias',
+      component: MidiasComponent,
     }
 ];
