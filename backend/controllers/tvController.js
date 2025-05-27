@@ -24,7 +24,7 @@ export async function getallTVs (req, res) {
         LEFT JOIN
             media ON media.tv_id = tvs.id
         ORDER BY
-            tvs.id, media.media_order
+            tvs.id, image_id
     `
     db.query(query, (err, results) => {
         if (err) return res.status(500).json({ error: err });
