@@ -7,10 +7,9 @@ html {
   @include mat.theme((
     color: (
       theme-type: light,
-      primary: mat.$orange-palette,
-      tertiary: mat.$orange-palette,
+      primary: mat.$green-palette,
+      tertiary: mat.$azure-palette,
     ),
-    typography: Roboto,
     density: 0,
   ));
 }

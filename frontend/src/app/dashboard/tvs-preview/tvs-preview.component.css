@@ -1,66 +1,61 @@
-.tv-title {
-    font-weight: 400;
-    text-transform: uppercase;
-    text-align: center;
-    width: 300px;
-    margin: auto;
-    padding: 4px;
+.tv-card {
+  background-color: #f9f9f9;
+  box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.1);
+  border-radius: 24px;
 }
 
-.tv-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-}
-
-.tv-thumbnail {
-    width: 325px;
-    height: 175px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    padding: 16px;
-    background-color: #fffff9;
-    border: 3px solid #111;
-    border-radius: 10px;
-    box-shadow:
-        0 0 5px rgba(0, 0, 0, 0.5),
-        inset 0 0 5px rgba(255, 255, 255, 0.05);
-    position: relative;
-}
-
-
-.tv-wrapper {
+.tv-card-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  padding: 12px 16px;
 }
 
-.tv-stand {
-  width: 50px;
-  height: 15px;
-  background-color: #222;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+.card-header-image {
+  background-image: url('/assets/logo-gsoul.png');
+  background-size: contain;
+  background-color: white;
+  background-position: center;
+  margin-bottom: 0;
+  border: 1px solid #d3d3d3;
 }
 
-.tv-base {
-  width: 150px;
-  height: 8px;
-  background: linear-gradient(to top, #222, #333);
-  border-radius: 8px;
-  box-shadow:
-    0 2px 5px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+.tv-card-title {
+  font-size: 16px;
+  text-transform: capitalize;
 }
 
-.tv-thumbnail img {
+.tv-card-images {
+  height: 240px;
+  background-color: #e9e9e9;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 16px;
+}
+
+.tv-card-images img {
     width: 100%;
     height: auto;
     object-fit: cover;
 }
 
-.button-row {
-  display: flex;
-  gap: 12px;
+.tv-card-actions {
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px;
+}
+
+.tv-card-actions button:first-of-type {
+  color: #d8871c;
+}
+
+.tv-card-actions button:last-of-type {
+  background-color: #599332;
+}
+
+@media (min-width: 760px) {
+  .tv-card {
+    width: 375px;
+    height: 360px;
+  }
 }

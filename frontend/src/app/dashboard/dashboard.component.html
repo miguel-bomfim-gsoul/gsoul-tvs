@@ -1,35 +1,47 @@
 <section class="dashboard">
     @if (isFetching() && !error()) {
         <mat-spinner style="margin: auto; margin-top: 200px;"></mat-spinner>
-    }
-
-    @if (error()) {
+    } @else if (error()) {
         <p style="text-align: center; margin-top: 24px;">{{ error() }}</p>
-    }
-
-    <button (click)="isEditing ? toggleEdit() : addTv()" mat-flat-button>
-        @if (isEditing) {
-            <span class="action-button">
-                <mat-icon>chevron_left</mat-icon>Voltar
-            </span>
-        } @else {
-            <span class="action-button">
-                <mat-icon >add</mat-icon>Adicionar TV
-            </span>
-        }
-    </button>
-    
-    @if (isEditing) {
-        
-        <app-tv-edit [selectedTv]="selectedTv" />
     } @else {
-        <!-- <button (click)="addTv()">Add +</button> -->
-        <ul>
-            @for (tv of tvs(); track tv.id) {
-                <li>
-                    <app-tvs-preview [tv]="tv" (edit)="onSelectTvEdit($event)"/>
-                </li>
+        <div class="searchInputSection">
+            @if (isEditing) {
+                <button class="back-button" (click)="toggleEdit()" mat-flat-button>
+                    <span class="action-button">
+                        <mat-icon>chevron_left</mat-icon>Voltar
+                    </span>
+                </button>
+            } @else {
+                <button class="addTvButton" (click)="addTv()" mat-flat-button>
+                    <span class="action-button">
+                        <mat-icon >add</mat-icon>Add TV
+                    </span>
+                </button>
+
+                <mat-form-field appearance="outline" color="primary">
+                    <div style="display: flex; gap: 12px;">
+                        <mat-icon>search</mat-icon>
+                        <input  matInput type="text" [(ngModel)]="value" placeholder="Buscar TV">
+                    </div>
+                    
+                    @if (value) {
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                        <mat-icon>close</mat-icon>
+                        </button>
+                    }
+                </mat-form-field>
             }
-        </ul>
+        </div>
+        @if (isEditing) {
+            <app-tv-edit [selectedTv]="selectedTv" />
+        } @else {
+            <ul style="margin-top: 12px;">
+                @for (tv of tvs(); track tv.id) {
+                    <li>
+                        <app-tvs-preview [tv]="tv" (edit)="onSelectTvEdit($event)"/>
+                    </li>
+                }
+            </ul>
+        }
     }
 </section>

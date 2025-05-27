@@ -1,17 +1,28 @@
 .menu {
-    background-color: #fff;
+    background-color: rgb(255, 255, 255);
     justify-content: center;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.menu div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu a {
+    background-color: rgba(109, 109, 109, 0.1);
+}
+
+.active-link {
+  font-weight: 600;
 }
 
 .logo-gsoul {
     width: 100px;
-    position: fixed;
+    position: absolute;
     left: 0;
     margin-left: 16px;
-}
-
-.example-spacer {
-  flex: 1 1 auto;
 }
 
 @media (min-width: 760px) {

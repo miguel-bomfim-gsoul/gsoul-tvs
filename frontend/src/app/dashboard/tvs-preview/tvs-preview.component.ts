@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatCardModule} from '@angular/material/card';
 
 interface MediaType {
   id: number
@@ -17,7 +18,7 @@ interface TvType {
 
 @Component({
   selector: 'app-tvs-preview',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MatCardModule],
   templateUrl: './tvs-preview.component.html',
   styleUrl: './tvs-preview.component.css'
 })

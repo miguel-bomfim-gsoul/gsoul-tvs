@@ -1,17 +1,15 @@
-<h3 class="tv-title">{{tv.name}}</h3>
-<div class="tv-preview">
-    <div class="tv-wrapper">
-    <div class="tv-thumbnail teste">
+<mat-card class="tv-card" appearance="outlined">
+  <mat-card-header class="tv-card-header">
+    <div mat-card-avatar class="card-header-image"></div>
+    <mat-card-title class="tv-card-title">{{tv.name}}</mat-card-title>
+  </mat-card-header>
+  <div class="tv-card-images">
             @for (image of tv.images; track $index) {
                 <img src="{{image.url_image}}" alt="TV Image {{ $index + 1 }}" />
             }
-    </div>
-    <div class="tv-stand"></div>
-    <div class="tv-base"></div>
-    </div>
-    
-    <div class="button-row">
-        <button (click)="onClickEdit()" mat-stroked-button><mat-icon>edit</mat-icon>Editar</button>
-        <button (click)="onClickViewTv()" mat-flat-button><mat-icon>open_in_new</mat-icon>Ver</button>
-    </div>
-</div>
+  </div>
+  <mat-card-actions class="tv-card-actions">
+    <button (click)="onClickEdit()" mat-stroked-button><mat-icon>edit</mat-icon>Editar</button>
+    <button (click)="onClickViewTv()" mat-flat-button><mat-icon>open_in_new</mat-icon>Visualizar</button>
+  </mat-card-actions>
+</mat-card>
