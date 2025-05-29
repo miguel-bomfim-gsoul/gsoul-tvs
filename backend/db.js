@@ -1,20 +1,15 @@
-import { createConnection } from 'mysql2';
+import { createPool } from 'mysql2';
 import 'dotenv/config.js';
 
-const connection = createConnection({
+const pool = createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-})
-
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        return;
-    }
-    console.log('Connected to the database');
+    waitForConnections: true,
+    connectionLimit: 20,
+    queueLimit: 0
 });
 
-export default connection;
+export default pool;
