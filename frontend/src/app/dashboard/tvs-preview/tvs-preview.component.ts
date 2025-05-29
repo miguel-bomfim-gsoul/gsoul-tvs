@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
@@ -22,10 +22,11 @@ interface TvType {
   templateUrl: './tvs-preview.component.html',
   styleUrl: './tvs-preview.component.css'
 })
+
 export class TvsPreviewComponent {
   @Input({ required: true }) tv!: TvType;
-
   @Output() edit = new EventEmitter()
+  isDeletingTv = signal<boolean>(false)
 
   onClickEdit() {
     this.edit.emit(this.tv.id)
@@ -34,5 +35,8 @@ export class TvsPreviewComponent {
   onClickViewTv() {
     window.open(`/tv/${this.tv.tv_slug}`, '_blank');
   }
-}
 
+  toggleDelete() {
+    this.isDeletingTv.set(!this.isDeletingTv())
+  }
+}

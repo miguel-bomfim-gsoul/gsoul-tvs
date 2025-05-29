@@ -36,6 +36,10 @@
     gap: 8px;
 }
 
+.input-field {
+    cursor: text;
+}
+
 .dashboard ul {
     display: flex;
     flex-direction: column;
