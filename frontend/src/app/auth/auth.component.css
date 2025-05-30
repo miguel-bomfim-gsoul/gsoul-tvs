@@ -1,0 +1,13 @@
+.login-button {
+    justify-self: center;
+    padding-top: 33vh;
+}
+
+.login-button button {
+    display: flex;
+    align-items: center;
+}
+
+.google-icon {
+    width: 100%;
+}

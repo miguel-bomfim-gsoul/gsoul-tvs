@@ -1,22 +1,26 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
+import { AuthComponent } from './auth/auth.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MidiasComponent } from './dashboard/midias/midias.component'
 import { TvComponent } from './tv/tv.component';
+import { AuthGuard } from '../guards/auth.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: AuthComponent },
     {
       path: 'dashboard',
-      component: DashboardComponent
-    },
-    {
-      path: 'tv/:tv_slug',
-      component: TvComponent      
+      component: DashboardComponent,
+      canActivate: [AuthGuard]
     },
     {
       path: 'dashboard/midias',
       component: MidiasComponent,
+      canActivate: [AuthGuard]
+
+    },
+    {
+      path: 'tv/:tv_slug',
+      component: TvComponent      
     }
 ];
