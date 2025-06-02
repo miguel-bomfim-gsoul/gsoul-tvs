@@ -1,5 +1,5 @@
 <main>
-  @if(showMenu()) {
+  @if(authService.isAuthenticated() && showMenu()) {
     <app-menu/>
   }
   <router-outlet />

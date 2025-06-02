@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
 import { MenuComponent } from './menu/menu.component'
+import {  AuthGoogleService } from '../services/auth-google.service'
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,8 @@ import { MenuComponent } from './menu/menu.component'
 export class AppComponent {
   private location = inject(Location)
   currentPath = this.location.path();
+
+  constructor(public authService: AuthGoogleService) {}
 
   showMenu(): boolean {
     return this.currentPath.includes('dashboard');

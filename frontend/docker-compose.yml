@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: gsoul-tvs
+    ports:
+      - "3007:80"
+    environment:
+      - NODE_ENV=production
+    restart: always

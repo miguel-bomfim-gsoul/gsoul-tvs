@@ -1,17 +1,17 @@
-import { inject } from "@angular/core";
-import { CanActivateChildFn, Router } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthGoogleService } from "../services/auth-google.service";
 
-export const AuthGuard: CanActivateChildFn = async  () => {
-    const authService = inject(AuthGoogleService)
-    const router = inject(Router)
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthGuard implements CanActivate {
+  constructor(private authService: AuthGoogleService, private router: Router) {}
 
-    await authService.ensureLoginInitialized();
-
-    if(authService.isLoggedIn()) {
-        return true
-    } else {
-        router.navigate(['/login'])
-        return false
-    }
+  async canActivate(): Promise<boolean | UrlTree> {
+    await this.authService.initialize();
+    return this.authService.isAuthenticated()
+      ? true
+      : this.router.createUrlTree(['/login']);
+  }
 }

@@ -9,6 +9,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { AuthGoogleService } from "../../services/auth-google.service";
 
 interface MediaType {
   id: number
@@ -47,6 +48,16 @@ export class DashboardComponent implements OnInit {
   value = '';
   private httpClient = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
+
+  constructor(public authService: AuthGoogleService) {}
+
+  // get claims() {
+  //   return this.authService.identityClaims;
+  // }
+
+  // logout() {
+  //   this.authService.logout();
+  // }
 
   ngOnInit() {
     this.isFetching.set(true);
