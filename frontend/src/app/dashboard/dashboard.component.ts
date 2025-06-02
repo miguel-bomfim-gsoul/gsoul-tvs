@@ -51,14 +51,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(public authService: AuthGoogleService) {}
 
-  // get claims() {
-  //   return this.authService.identityClaims;
-  // }
-
-  // logout() {
-  //   this.authService.logout();
-  // }
-
   ngOnInit() {
     this.isFetching.set(true);
     const subscription = this.httpClient.get<TvType[]>('http://localhost:3000/tvs').subscribe({
@@ -96,8 +88,7 @@ export class DashboardComponent implements OnInit {
     this.httpClient.post('http://localhost:3000/tvs', this.reqBody)
       .subscribe({
         next: (resData) => {
-          console.log('TV added successfully:', resData);
-          this.ngOnInit(); // Refresh the list after adding a new TV
+          this.ngOnInit(); 
         },
         error: (error) => {
           console.error('Error adding TV:', error);

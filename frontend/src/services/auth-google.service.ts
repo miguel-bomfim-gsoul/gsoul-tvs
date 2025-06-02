@@ -31,8 +31,6 @@ export class AuthGoogleService {
           this.http.get<{ id: number; email: string }[]>('http://localhost:3000/users')
         );
 
-        console.log('users', users)
-
         const allowedEmails = users.map(user => user.email);
 
         if (!allowedEmails.includes(email)) {
