@@ -4,6 +4,7 @@ import pkg from 'body-parser';
 import 'dotenv/config.js';
 import tvRoutes from './routes/tvRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 const { json } = pkg;
 const app = express();
@@ -14,6 +15,7 @@ app.use(json());
 
 app.use('/tvs', tvRoutes);
 app.use('/media', mediaRoutes);
+app.use('/users', userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
