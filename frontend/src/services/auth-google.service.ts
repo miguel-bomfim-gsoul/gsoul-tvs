@@ -1,45 +1,67 @@
 // auth.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { authConfig } from '../config/auth.config';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGoogleService {
-  constructor(private oauthService: OAuthService) {
-    this.configure();
-  }
+  isOn = signal<boolean>(false)
 
-  private configure() {
-    // Configure the library with your Google settings
-    this.oauthService.configure(authConfig);
-    // Try to discover the discovery document and then automatically login if possible.
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
+  constructor(
+    private oauthService: OAuthService,
+    private http: HttpClient
+  ) {
+    this.initialize();
   }
 
   public async initialize(): Promise<void> {
-    // Wait for the discovery document and try login process to complete.
+    this.oauthService.configure(authConfig);
     await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+
+    if (this.oauthService.hasValidIdToken()) {
+      const claims: any = this.oauthService.getIdentityClaims();
+      const email = claims?.email;
+
+      try {
+        const users = await firstValueFrom(
+          this.http.get<{ id: number; email: string }[]>('http://localhost:3000/users')
+        );
+
+        console.log('users', users)
+
+        const allowedEmails = users.map(user => user.email);
+
+        if (!allowedEmails.includes(email)) {
+          this.logout();
+          this.isOn.set(false);
+        } else {
+          this.isOn.set(true);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar usuários permitidos', error);
+        this.logout();
+        this.isOn.set(false);
+      }
+    }
   }
 
-  // This method starts the login flow.
   public login() {
-    this.oauthService.initCodeFlow();
+    this.oauthService.initImplicitFlow();
   }
 
-  // Log out the user.
   public logout() {
     this.oauthService.logOut();
   }
 
-  // Returns identity claims (like email and name)
   public get identityClaims(): any {
     return this.oauthService.getIdentityClaims() || null;
   }
 
-  // Quick check for a valid access token.
   public isAuthenticated(): boolean {
-    return this.oauthService.hasValidAccessToken();
+    return this.oauthService.hasValidAccessToken() && this.isOn()
   }
 }
