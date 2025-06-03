@@ -24,19 +24,20 @@ interface TvType {
 })
 
 export class TvsPreviewComponent {
+  @Input({ required: true }) selectedTv?: TvType
   @Input({ required: true }) tv!: TvType;
   @Output() edit = new EventEmitter()
-  isDeletingTv = signal<boolean>(false)
+  @Output() delete = new EventEmitter()
 
   onClickEdit() {
     this.edit.emit(this.tv.id)
   }
 
-  onClickViewTv() {
-    window.open(`/tv/${this.tv.tv_slug}`, '_blank');
+  onClickDelete() {
+    this.delete.emit(this.tv.id)
   }
 
-  toggleDelete() {
-    this.isDeletingTv.set(!this.isDeletingTv())
+  onClickViewTv() {
+    window.open(`/tv/${this.tv.tv_slug}`, '_blank');
   }
 }

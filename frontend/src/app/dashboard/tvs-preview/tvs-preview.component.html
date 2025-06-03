@@ -2,7 +2,7 @@
   <mat-card-header class="tv-card-header">
     <div mat-card-avatar class="card-header-image"></div>
     <mat-card-title class="tv-card-title">{{tv.name}}</mat-card-title>
-    <mat-icon (click)="toggleDelete()" class="delete-tv-icon">delete</mat-icon>
+    <mat-icon (click)="onClickDelete()" class="delete-tv-icon">delete</mat-icon>
   </mat-card-header>
   <div class="tv-card-images">
             @for (image of tv.images; track $index) {

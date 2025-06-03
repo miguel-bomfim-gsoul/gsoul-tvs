@@ -102,4 +102,17 @@ export class DashboardComponent implements OnInit {
     this.toggleEdit()
     this.selectedTv = this.tvs()?.find(tv => tv.id === Number(this.selectedTvId));
   }
+
+  onSelectTvDelete(id: string) {
+      this.httpClient.delete(`http://localhost:3000/tvs/${id}`)
+      .subscribe({
+        next: (resData) => {
+          this.ngOnInit(); 
+        },
+        error: (error) => {
+          console.error('Error adding TV:', error);
+          this.error.set('! Something went wrong while adding TV !');
+        }
+    });
+  }
 }

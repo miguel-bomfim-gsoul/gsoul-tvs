@@ -38,7 +38,12 @@
             <ul style="margin-top: 12px;">
                 @for (tv of tvs(); track tv.id) {
                     <li>
-                        <app-tvs-preview [tv]="tv" (edit)="onSelectTvEdit($event)"/>
+                        <app-tvs-preview
+                            [tv]="tv"
+                            [selectedTv]="selectedTv"
+                            (edit)="onSelectTvEdit($event)"
+                            (delete)="onSelectTvDelete($event)"
+                        />
                     </li>
                 }
             </ul>

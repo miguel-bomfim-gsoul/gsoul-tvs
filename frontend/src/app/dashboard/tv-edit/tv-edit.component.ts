@@ -9,7 +9,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 
-
 interface MediaType {
   id: number
   url_image: string
