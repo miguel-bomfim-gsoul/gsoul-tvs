@@ -1,0 +1,97 @@
+.tv-list {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tv-item {
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.tv-item:last-child {
+  border-bottom: none;
+}
+
+.tv-item.active {
+  background-color: #f5f5f5;
+}
+
+.tv-item-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.tv-item-details {
+  padding: 0 16px 16px 48px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+}
+
+.drag-handle {
+  margin-right: 12px;
+  color: #aaa;
+  cursor: move;
+}
+
+.tv-order {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #3f51b5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.tv-location {
+  margin-left: 4px;
+  color: #757575;
+  font-size: 12px;
+}
+
+.tv-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: #f44336;
+  color: white;
+}
+
+.tv-status.active {
+  background-color: #4caf50;
+}
+
+.dates-row {
+  display: flex;
+  gap: 16px;
+}
+
+.dates-row mat-form-field {
+  flex: 1;
+}
+
+/* Drag animation styles */
+.cdk-drag-preview {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tv-list.cdk-drop-list-dragging .tv-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

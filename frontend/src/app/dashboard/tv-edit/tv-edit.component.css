@@ -1,83 +1,71 @@
-.tv-edit button {
-    padding: 4px;
-    margin-bottom: 12px;
+.media-table {
+  width: 100%;
+  overflow-x: auto;
 }
 
-.tv-edit h2 {
-    text-align: center;
-    margin-bottom: 16px;
+.media-list {
+  width: 100%;
 }
 
-.slide-order {
-    width: 50%;
+.media-item {
+  cursor: move;
 }
 
-.tv-edit img {
-    width: 100%;
+.order-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.tv-edit-item {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    align-items: center;
-    padding: 16px 0;
-    gap: 16px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #000;
+.type-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-
-.drawer-container {
-    background-color: #fff;
-    width: 500px;
-    height: 300px;
-    overflow-x: hidden;
-    scrollbar-width: none;
+.dates-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
 }
 
-
-.drawer-sidenav {
-    padding: 20px;
-    scrollbar-width: none;
+.mat-column-order {
+  width: 70px;
 }
 
-.drawer-sidenav-content {
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    overflow-x: hidden;
+.mat-column-thumbnail {
+  width: 80px;
 }
 
-
-.related-tvs-container {
-    display: flex;
-    gap: 32px;
-    overflow: hidden;
+.mat-column-name {
+  min-width: 120px;
 }
 
-.related-tvs-names {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.mat-column-type {
+  width: 100px;
 }
 
-.related-tvs-names * {
-    height: 75px;
-    display: flex;
+.mat-column-duration {
+  width: 80px;
 }
 
-.related-tvs-order {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
+.mat-column-dates {
+  min-width: 220px;
 }
 
-.linked-tv-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
+.mat-column-progress {
+  width: 80px;
+}
+
+.mat-column-tvs {
+  width: 80px;
+}
+
+.mat-column-actions {
+  width: 120px;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
 }

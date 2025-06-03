@@ -1,71 +1,106 @@
-<section class="tv-edit">
-    <h2>
-        {{selectedTv?.name}}
-    </h2>
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Media Management</mat-card-title>
+      <mat-card-subtitle>Manage content for TV displays</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div cdkDropList class="media-list" (cdkDropListDropped)="onDrop($event)">
+        <table mat-table [dataSource]="mediaItems" class="mat-elevation-z1 media-table">
+          <!-- Order Column -->
+          <ng-container matColumnDef="order">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell *matCellDef="let item">
+              <div class="order-cell">
+                <div class="drag-handle" cdkDragHandle>
+                  <mat-icon>drag_indicator</mat-icon>
+                </div>
+                <span>{{ item.order }}</span>
+              </div>
+            </td>
+          </ng-container>
 
-    <ul>
-        @for (image of selectedTv?.images; track image) {
-            <li class="tv-edit-item">
-                <img [src]="image.url_image" alt="media tv">
+          <!-- Thumbnail Column -->
+          <ng-container matColumnDef="thumbnail">
+            <th mat-header-cell *matHeaderCellDef> Thumbnail </th>
+            <td mat-cell *matCellDef="let item">
+              <img [src]="item.thumbnail" class="media-thumbnail" alt="Media thumbnail">
+            </td>
+          </ng-container>
 
-                <mat-form-field class="slide-order">
-                    <mat-label>Ordem</mat-label>
-                    <mat-select>
-                        @for (ordem of ordens; track ordem) {
-                        <mat-option [value]="ordem">{{ordem}}</mat-option>
-                        }
-                    </mat-select>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let item"> {{ item.name }} </td>
+          </ng-container>
+
+          <!-- Duration Column -->
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Duration </th>
+            <td mat-cell *matCellDef="let item"> {{ item.duration }}s </td>
+          </ng-container>
+
+          <!-- Dates Column -->
+          <ng-container matColumnDef="dates">
+            <th mat-header-cell *matHeaderCellDef> Display Period </th>
+            <td mat-cell *matCellDef="let item">
+              <div class="dates-container">
+                <mat-form-field appearance="outline">
+                  <mat-label>Start date</mat-label>
+                  <input matInput [matDatepicker]="startPicker" [value]="item.startDate" 
+                         (dateChange)="updateDates(item, $event.value, item.endDate)">
+                  <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #startPicker></mat-datepicker>
                 </mat-form-field>
                 
-                <mat-form-field>
-                    <mat-label>Selecione o período de exibição</mat-label>
-                    <mat-date-range-input [rangePicker]="picker">
-                        <input matStartDate placeholder="Data inicial">
-                        <input matEndDate placeholder="Data final">
-                    </mat-date-range-input>
-                    <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-form-field appearance="outline">
+                  <mat-label>End date</mat-label>
+                  <input matInput [matDatepicker]="endPicker" [value]="item.endDate"
+                         (dateChange)="updateDates(item, item.startDate, $event.value)">
+                  <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #endPicker></mat-datepicker>
                 </mat-form-field>
+              </div>
+            </td>
+          </ng-container>
 
-                <mat-drawer-container class="drawer-container" autosize >
-                    <mat-drawer #drawer class="drawer-sidenav" mode="side" position="end">
-                        <div class="related-tvs-container">
-                            <div class="related-tvs-names">
-                                @for (tvs of tvsList; track tvs) {
-                                    <mat-checkbox>
-                                        {{tvs}}
-                                    </mat-checkbox>
-                                }
-                            </div>
-                            <div class="related-tvs-order">
-                                @for (tvs of tvsList; track tvs) {
-                                <mat-form-field class="slide-order">
-                                    <mat-label>Ordem</mat-label>
-                                    <mat-select>
-                                        @for (ordem of ordens; track ordem) {
-                                        <mat-option [value]="ordem">{{ordem}}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
-                                }
-                            </div>
-                        </div>
-                    </mat-drawer>
+          <!-- TVs Column -->
+          <ng-container matColumnDef="tvs">
+            <th mat-header-cell *matHeaderCellDef> TVs </th>
+            <td mat-cell *matCellDef="let item">
+              <button mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Manage TVs">
+                {{ getTvCount(item) }}
+              </button>
+            </td>
+          </ng-container>
 
-                    <div class="drawer-sidenav-content">
-                        <button type="button" mat-flat-button (click)="drawer.toggle()">
-                            @if(drawer.opened) {
-                                <p>X</p>
-                            } @else {
-                                <span class="linked-tv-button">
-                                    <mat-icon>link</mat-icon>TVs Relacionadas
-                                </span>
-                            }
-                        </button>
-                    </div>
-                </mat-drawer-container>
-            </li>
-        }
-    </ul>
-</section>
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let item">
+              <button mat-icon-button color="primary" matTooltip="Preview">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row" class="media-item"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary">
+        <mat-icon>add</mat-icon> Add New Media
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
