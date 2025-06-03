@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
-import { MenuComponent } from './menu/menu.component'
-import {  AuthGoogleService } from '../services/auth-google.service'
+import { MenuComponent } from './components/menu/menu.component'
+import {  AuthGoogleService } from './core/services/auth-google.service'
 
 @Component({
   selector: 'app-root',

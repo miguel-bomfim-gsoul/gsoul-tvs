@@ -1,6 +1,5 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { TvsPreviewComponent } from './tvs-preview/tvs-preview.component';
 import { TvEditComponent } from './tv-edit/tv-edit.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -9,20 +8,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { AuthGoogleService } from "../../services/auth-google.service";
-
-interface MediaType {
-  id: number
-  url_image: string
-  media_order: number
-}
-
-interface TvType {
-  id: number
-  name: string
-  tv_slug: string
-  images?: MediaType[]
-}
+import { AuthGoogleService } from "../../core/services/auth-google.service";
+import { TvService, TvType } from '../../core/services/tv.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dashboard',
@@ -46,33 +34,35 @@ export class DashboardComponent implements OnInit {
   isFetching = signal<boolean>(false);
   error = signal<string | null>('');
   value = '';
-  private httpClient = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
 
-  constructor(public authService: AuthGoogleService) {}
+    constructor(
+      public authService: AuthGoogleService,
+      private tvService: TvService
+    ) {}
 
   ngOnInit() {
-    this.isFetching.set(true);
-    const subscription = this.httpClient.get<TvType[]>('http://localhost:3000/tvs').subscribe({
-      next: (resData) => {
-        this.tvs.set(resData);
-      },
-      error: (error) => {
-        console.error('Error fetching data:', error);
-        this.error.set('! Something went wrong while fetching data !');
-      },
-      complete: () => {
-        this.isFetching.set(false);
-      }
-    });
+    this.loadTvs()
+  }
 
-    this.destroyRef.onDestroy(() => {
-      subscription.unsubscribe();
-    })
+  private loadTvs() {
+    this.isFetching.set(true);
+    this.tvService.getAllTvs()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (resData) => {
+          this.tvs.set(resData);
+          this.isFetching.set(false);
+        },
+        error: (error) => {
+          console.error('Error fetching data:', error);
+          this.error.set('Something went wrong while fetching data');
+          this.isFetching.set(false);
+        }
+      });
   }
 
   isEditing: boolean = false;
-
   selectedTvId?: string
   selectedTv?: TvType
   
@@ -80,19 +70,21 @@ export class DashboardComponent implements OnInit {
     this.isEditing = !this.isEditing;
   }
 
-  reqBody = {
-    name: 'teste'
-  }
-
   addTv() {
-    this.httpClient.post('http://localhost:3000/tvs', this.reqBody)
+    const newTv = {
+      name: 'New TV',
+      tv_slug: 'new-tv'
+    };
+
+    this.tvService.createTv(newTv)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (resData) => {
-          this.ngOnInit(); 
+        next: () => {
+          this.loadTvs();
         },
         error: (error) => {
           console.error('Error adding TV:', error);
-          this.error.set('! Something went wrong while adding TV !');
+          this.error.set('Something went wrong while adding TV');
         }
       });
   }
@@ -104,15 +96,16 @@ export class DashboardComponent implements OnInit {
   }
 
   onSelectTvDelete(id: string) {
-      this.httpClient.delete(`http://localhost:3000/tvs/${id}`)
+    this.tvService.deleteTv(Number(id))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (resData) => {
-          this.ngOnInit(); 
+        next: () => {
+          this.loadTvs();
         },
         error: (error) => {
-          console.error('Error adding TV:', error);
-          this.error.set('! Something went wrong while adding TV !');
+          console.error('Error deleting TV:', error);
+          this.error.set('Something went wrong while deleting TV');
         }
-    });
+      });
   }
 }

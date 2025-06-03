@@ -1,6 +1,19 @@
+.table-header {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-title {
+  font-size: 24px;
+}
+
 .media-table {
   width: 100%;
   overflow-x: auto;
+}
+
+td, th {
+  text-align: center;
 }
 
 .media-list {
@@ -35,7 +48,11 @@
 }
 
 .mat-column-thumbnail {
-  width: 80px;
+  width: 200px;
+}
+
+.media-thumbnail {
+  width: 100%;
 }
 
 .mat-column-name {
@@ -60,10 +77,6 @@
 
 .mat-column-tvs {
   width: 80px;
-}
-
-.mat-column-actions {
-  width: 120px;
 }
 
 .mat-mdc-form-field {

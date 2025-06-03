@@ -11,9 +11,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatListModule } from '@angular/material/list';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
-import { MediaItem } from '../../../types/media-type';
-import { TV } from '../../../types/tv-type';
-import { MediaService } from '../../../../services/media.service';
+import { MediaItem } from '../../../../types/media-type';
+import { TV } from '../../../../types/tv-type';
+// import { MediaService } from '../../../../services/media.service';
 
 interface DialogData {
   mediaItem: MediaItem;
@@ -54,22 +54,22 @@ export class RelatedTvDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<RelatedTvDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private mediaService: MediaService
+    // private mediaService: MediaService
   ) {
     this.mediaItem = data.mediaItem;
   }
 
   ngOnInit(): void {
-    this.mediaService.getTvs().subscribe(tvs => {
-      this.allTVs = tvs;
-      this.tvOptions = this.allTVs.map((tv, index) => ({
-        tv,
-        selected: this.mediaItem.tvs.includes(tv.id),
-        order: index + 1,
-        startDate: this.mediaItem.startDate,
-        endDate: this.mediaItem.endDate
-      }));
-    });
+    // this.mediaService.getTvs().subscribe(tvs => {
+    //   this.allTVs = tvs;
+    //   this.tvOptions = this.allTVs.map((tv, index) => ({
+    //     tv,
+    //     selected: this.mediaItem.tvs.includes(tv.id),
+    //     order: index + 1,
+    //     startDate: this.mediaItem.startDate,
+    //     endDate: this.mediaItem.endDate
+    //   }));
+    // });
   }
 
   onDrop(event: CdkDragDrop<TVWithOrder[]>): void {

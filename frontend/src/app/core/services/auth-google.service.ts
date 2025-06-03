@@ -1,19 +1,18 @@
-// auth.service.ts
 import { Injectable, signal } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { authConfig } from '../config/auth.config';
-import { HttpClient } from '@angular/common/http';
+import { authConfig } from '../../../config/auth.config';
+import { UserService } from './user.service';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGoogleService {
-  isOn = signal<boolean>(false)
+  isOn = signal<boolean>(false);
 
   constructor(
     private oauthService: OAuthService,
-    private http: HttpClient
+    private userService: UserService
   ) {
     this.initialize();
   }
@@ -27,10 +26,7 @@ export class AuthGoogleService {
       const email = claims?.email;
 
       try {
-        const users = await firstValueFrom(
-          this.http.get<{ id: number; email: string }[]>('http://localhost:3000/users')
-        );
-
+        const users = await firstValueFrom(this.userService.getAllowedUsers());
         const allowedEmails = users.map(user => user.email);
 
         if (!allowedEmails.includes(email)) {
@@ -40,7 +36,7 @@ export class AuthGoogleService {
           this.isOn.set(true);
         }
       } catch (error) {
-        console.error('Erro ao buscar usuários permitidos', error);
+        console.error('Error fetching allowed users:', error);
         this.logout();
         this.isOn.set(false);
       }
@@ -60,6 +56,6 @@ export class AuthGoogleService {
   }
 
   public isAuthenticated(): boolean {
-    return this.oauthService.hasValidAccessToken() && this.isOn()
+    return this.oauthService.hasValidAccessToken() && this.isOn();
   }
 }

@@ -18,8 +18,12 @@ export async function getallTVs (req, res) {
             tvs.name,
             tvs.tv_slug,
             media.id AS image_id,
+            media.name AS media_name,
             media.url_image,
-            media.media_order 
+            media.media_order,
+            media.duration_seconds,
+            media.start_time,
+            media.end_time
         FROM tvs
         LEFT JOIN
             media ON media.tv_id = tvs.id
@@ -31,7 +35,7 @@ export async function getallTVs (req, res) {
 
         const tvs = {};
         results.forEach((row) => {
-            const { tv_id, name, tv_slug, image_id, url_image, media_order } = row;
+            const { tv_id, name, tv_slug, image_id, media_name, url_image, media_order, duration_seconds, start_time, end_time } = row;
 
             if (!tvs[tv_id]) {
                 tvs[tv_id] = {
@@ -45,8 +49,12 @@ export async function getallTVs (req, res) {
             if (image_id) {
                 tvs[tv_id].images.push({
                     id: image_id,
+                    media_name,
                     url_image,
-                    media_order
+                    media_order,
+                    duration_seconds,
+                    start_time,
+                    end_time
                 });
             }
         });

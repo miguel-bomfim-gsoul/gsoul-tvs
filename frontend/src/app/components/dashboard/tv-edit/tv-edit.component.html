@@ -1,0 +1,104 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header class="table-header">
+      <mat-card-title class="tv-title">📺{{ selectedTv?.name }}</mat-card-title>
+
+      <mat-card-actions align="end">
+        <button mat-flat-button color="primary">
+          <mat-icon>add</mat-icon> Adicionar nova mídia
+        </button>
+      </mat-card-actions>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div cdkDropList class="media-list" (cdkDropListDropped)="onDrop($event)">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 media-table">
+          <!-- Order Column -->
+          <ng-container matColumnDef="order">
+            <th mat-header-cell *matHeaderCellDef>Ordem</th>
+            <td mat-cell *matCellDef="let item">
+              <div class="order-cell">
+                <div class="drag-handle" cdkDragHandle>
+                  <mat-icon>drag_indicator</mat-icon>
+                </div>
+                <span>{{ item.media_order }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Thumbnail Column -->
+          <ng-container matColumnDef="thumbnail">
+            <th mat-header-cell *matHeaderCellDef> Thumbnail </th>
+            <td mat-cell *matCellDef="let item">
+              <img [src]="item.url_image" class="media-thumbnail" alt="Media thumbnail">
+            </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <td mat-cell *matCellDef="let item"> {{ item.media_name }} </td>
+          </ng-container>
+
+          <!-- Duration Column -->
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Duração </th>
+            <td mat-cell *matCellDef="let item"> {{ item.duration_seconds }}s </td>
+          </ng-container>
+
+          <!-- Dates Column -->
+          <ng-container matColumnDef="dates">
+            <th mat-header-cell *matHeaderCellDef> Período de exibição </th>
+            <td mat-cell *matCellDef="let item">
+              <div class="dates-container">
+                <mat-form-field>
+                  <mat-label>Selecione o período de exibição</mat-label>
+                  <mat-date-range-input [rangePicker]="picker">
+                      <input
+                        matStartDate
+                        [value]="item.start_time"
+                        placeholder="Data inicial"
+                        (dateChange)="updateDates(item, $event.value, item.start_time)"
+                      >
+                      <input
+                        matEndDate
+                        [value]="item.end_time"
+                        placeholder="Data final"
+                        (dateChange)="updateDates(item, $event.value, item.end_time)"
+                      >
+                  </mat-date-range-input>
+                  <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- TVs Column -->
+          <!-- <ng-container matColumnDef="tvs">
+            <th mat-header-cell *matHeaderCellDef> TVs </th>
+            <td mat-cell *matCellDef="let item">
+              <button mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Manage TVs">
+                {{ getTvCount(item) }}
+              </button>
+            </td>
+          </ng-container> -->
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let item">
+              <button mat-icon-button matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row" class="media-item"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from './auth/auth.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { MidiasComponent } from './dashboard/midias/midias.component'
-import { TvComponent } from './tv/tv.component';
-import { AuthGuard } from '../guards/auth.guard';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MidiasComponent } from './components/dashboard/midias/midias.component'
+import { TvComponent } from './components/tv/tv.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },

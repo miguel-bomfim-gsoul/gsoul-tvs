@@ -2,15 +2,26 @@
   <div class="login-div">
     <img class="logo" src="/assets/logo-gsoul.png" alt=""> 
     <h1>GSoul TVs</h1>
-    <button mat-raised-button (click)="loginWithGoogle()">
-      <mat-icon>
-        <img
-          src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
-          alt="Google"
-          class="google-icon"
-        />
-      </mat-icon>
-      Sign in with Google
+      <button 
+        mat-raised-button 
+        (click)="loginWithGoogle()" 
+        [disabled]="isLoading"
+      >
+      @if(!isLoading) {
+        <span class="inside-button">
+          <mat-icon>
+            <img
+              src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
+              alt="Google"
+              class="google-icon"
+            />
+          </mat-icon>
+          Sign in with Google
+        </span>
+      }
+      @if(isLoading) {
+        <mat-spinner diameter="20"></mat-spinner>
+      }
     </button>
   </div>
 </section>
