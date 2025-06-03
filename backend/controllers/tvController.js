@@ -61,3 +61,11 @@ export async function getTvById (req, res){
         res.json(results[0]);
     })
 }
+
+export async function deleteTv (req, res){
+    const { id } = req.params;
+    db.query('DELETE FROM tvs WHERE id = ?', [id], (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json('Tv deletada com sucesso!');
+    })
+}
