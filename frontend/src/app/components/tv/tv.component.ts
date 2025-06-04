@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MediaService } from '../../core/services/media.service';
+import { MediaService, MediaByTvResponse } from '../../core/services/media.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -10,11 +10,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './tv.component.css'
 })
 export class TvComponent implements OnInit {
-  images = signal<string[]>([]);
-
+  medias = signal<MediaByTvResponse[]>([]);
   currentIndex = 0;
   intervalId: any;
-  delay = 5000;
+  timer = 15000;
   private destroyRef = inject(DestroyRef)
   private route = inject(ActivatedRoute);
 
@@ -23,9 +22,18 @@ export class TvComponent implements OnInit {
   ) {}
 
   startCarousel() {
-  this.intervalId = setInterval(() => {  
-    this.currentIndex = (this.currentIndex + 1) % this.images().length;
-  }, this.delay);
+  const runCarousel = () => {
+    const mediasArray = this.medias();
+    if (!mediasArray.length) return;
+  
+    this.currentIndex = (this.currentIndex + 1) % mediasArray.length;
+    const currentMedia = mediasArray[this.currentIndex];
+    const duration = (Number(currentMedia.duration_seconds)) * 1000;
+    this.intervalId = setTimeout(runCarousel, duration);
+  }
+
+  runCarousel()
+
   }
 
   ngOnInit() {
@@ -37,7 +45,7 @@ export class TvComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: (resData) => {
-              this.images.set(resData.map(image => image.url_image));
+              this.medias.set(resData);
             },
             complete: () => {
               this.startCarousel();

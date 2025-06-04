@@ -14,6 +14,7 @@ export interface MediaType {
 
 export interface MediaByTvResponse {
   url_image: string;
+  duration_seconds: string;
 }
 
 @Injectable({

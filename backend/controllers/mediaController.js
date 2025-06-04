@@ -15,7 +15,8 @@ export function getMediaByTv (req, res) {
     const { tv_id } = req.params;
         const query = `
             SELECT
-                media.url_image
+                media.url_image,
+                media_tv.duration_seconds
             FROM media
             JOIN media_tv ON media.id = media_tv.media_id
             JOIN tvs ON media_tv.tv_id = tvs.id
