@@ -55,8 +55,8 @@ export class TvEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.selectedTv?.images) {
-      this.dataSource = new MatTableDataSource<MediaType>(this.selectedTv.images.sort((a, b) => a.media_order - b.media_order));
+    if (this.selectedTv?.medias) {
+      this.dataSource = new MatTableDataSource<MediaType>(this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order));
     }
 
     // this.mediaService.getMediaItems().subscribe({

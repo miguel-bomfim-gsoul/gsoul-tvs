@@ -20,7 +20,7 @@ export const routes: Routes = [
 
     },
     {
-      path: 'tv/:tv_slug',
+      path: 'tv/:tv_id',
       component: TvComponent      
     }
 ];

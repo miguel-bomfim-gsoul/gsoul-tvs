@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { MediaService } from '../../core/services/media.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-tv',
@@ -13,36 +14,34 @@ export class TvComponent implements OnInit {
 
   currentIndex = 0;
   intervalId: any;
-  delay = 3000;
-  private httpClient = inject(HttpClient);
+  delay = 5000;
   private destroyRef = inject(DestroyRef)
   private route = inject(ActivatedRoute);
 
+  constructor(
+    private mediaService: MediaService
+  ) {}
+
   startCarousel() {
-  this.intervalId = setInterval(() => {
+  this.intervalId = setInterval(() => {  
     this.currentIndex = (this.currentIndex + 1) % this.images().length;
   }, this.delay);
   }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const slug = params.get('tv_slug');
+      const tv_id = params.get('tv_id');
 
-      if (slug) {
-        const subscription = this.httpClient
-          .get<{ url: string }[]>(`http://localhost:3000/media/${slug}`)
+      if (tv_id) {
+        this.mediaService.getMediaByTv(tv_id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: (resData) => {
-              this.images.set(resData.map(image => image.url));
+              this.images.set(resData.map(image => image.url_image));
             },
             complete: () => {
               this.startCarousel();
             }
-          });
-
-        this.destroyRef.onDestroy(() => {
-          subscription.unsubscribe();
-          clearInterval(this.intervalId);
         });
       }
     });

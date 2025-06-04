@@ -12,20 +12,18 @@ export function addMedia (req, res) {
 }
 
 export function getMediaByTv (req, res) {
-    const { tv_slug } = req.params;
+    const { tv_id } = req.params;
         const query = `
-        SELECT
-            media.url_image AS url,
-            tvs.id AS tv_id,
-            tvs.name AS tv_name,
-            tvs.tv_slug
-        FROM media
-        JOIN tvs ON media.tv_id = tvs.id
-        WHERE tvs.tv_slug = ?
+            SELECT
+                media.url_image
+            FROM media
+            JOIN media_tv ON media.id = media_tv.media_id
+            JOIN tvs ON media_tv.tv_id = tvs.id
+            WHERE tvs.id = ?
         `
     db.query(
         query,
-        [tv_slug], (err, results) => {
+        [tv_id], (err, results) => {
         if (err) return res.status(500).json({ error: err });
         res.json(results);
     })

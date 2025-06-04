@@ -10,14 +10,10 @@ export interface MediaType {
   duration_seconds: number;
   start_time: Date;
   end_time: Date;
-  tv_id: number;
 }
 
 export interface MediaByTvResponse {
-  url: string;
-  tv_id: number;
-  tv_name: string;
-  tv_slug: string;
+  url_image: string;
 }
 
 @Injectable({
@@ -30,8 +26,8 @@ export class MediaService {
     return this.api.post<{ id: number }>('media', media);
   }
 
-  getMediaByTv(tvSlug: string): Observable<MediaByTvResponse[]> {
-    return this.api.get<MediaByTvResponse[]>(`media/${tvSlug}`);
+  getMediaByTv(tvId: string): Observable<MediaByTvResponse[]> {
+    return this.api.get<MediaByTvResponse[]>(`media/${tvId}`);
   }
 
   updateMediaOrder(mediaId: number, newOrder: number): Observable<void> {

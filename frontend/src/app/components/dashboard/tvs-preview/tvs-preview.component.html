@@ -1,11 +1,11 @@
 <mat-card class="tv-card" appearance="outlined">
   <mat-card-header class="tv-card-header">
     <div mat-card-avatar class="card-header-image"></div>
-    <mat-card-title class="tv-card-title">{{tv.name}}</mat-card-title>
+    <mat-card-title class="tv-card-title">{{tv.tv_name}}<span>#{{tv.id}}</span></mat-card-title>
     <mat-icon (click)="onClickDelete()" class="delete-tv-icon">delete</mat-icon>
   </mat-card-header>
   <div class="tv-card-images">
-            @for (image of tv.images; track $index) {
+            @for (image of tv.medias; track $index) {
                 <img src="{{image.url_image}}" alt="TV Image {{ $index + 1 }}" />
             }
   </div>

@@ -5,9 +5,9 @@ import { MediaType } from "./media.service"
 
 export interface TvType {
   id: number;
-  name: string;
+  tv_name: string;
   tv_slug: string;
-  images?: MediaType[];
+  medias?: MediaType[];
 }
 
 export interface CreateTvResponse {

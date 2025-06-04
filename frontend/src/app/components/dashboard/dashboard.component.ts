@@ -72,8 +72,7 @@ export class DashboardComponent implements OnInit {
 
   addTv() {
     const newTv = {
-      name: 'New TV',
-      tv_slug: 'new-tv'
+      name: 'New TV'
     };
 
     this.tvService.createTv(newTv)

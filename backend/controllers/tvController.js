@@ -2,7 +2,8 @@ import db from '../db.js';
 
 export async function addTv (req, res){
     const { name } = req.body;
-    const tv_slug = name.toLocaleLowerCase().replace(/\s/g, "-");
+    const uniqueId = Date.now();
+    const tv_slug = `${name.toLocaleLowerCase().replace(/\s/g, "-")}-${uniqueId}`;
     db.query('INSERT INTO tvs VALUES(0, ?, ?)', [name, tv_slug], (err, result) => {
         if (err) {
             return res.status(500).json({ error: err });
@@ -14,41 +15,44 @@ export async function addTv (req, res){
 export async function getallTVs (req, res) {
     const query = `
         SELECT
-            tvs.id AS tv_id,    
-            tvs.name,
-            tvs.tv_slug,
-            media.id AS image_id,
-            media.name AS media_name,
-            media.url_image,
-            media.media_order,
-            media.duration_seconds,
-            media.start_time,
-            media.end_time
-        FROM tvs
+            t.id AS tv_id,
+            t.name AS tv_name,
+            t.tv_slug,
+            m.id AS media_id,
+            m.name AS media_name,
+            m.url_image,
+            mt.media_order,
+            mt.duration_seconds,
+            mt.start_time,
+            mt.end_time
+        FROM
+            tvs t
         LEFT JOIN
-            media ON media.tv_id = tvs.id
+            media_tv mt ON t.id = mt.tv_id
+        LEFT JOIN
+            media m ON m.id = mt.media_id
         ORDER BY
-            tvs.id, image_id
+            mt.media_order;
     `
     db.query(query, (err, results) => {
         if (err) return res.status(500).json({ error: err });
 
         const tvs = {};
         results.forEach((row) => {
-            const { tv_id, name, tv_slug, image_id, media_name, url_image, media_order, duration_seconds, start_time, end_time } = row;
+            const { tv_id, tv_name, tv_slug, media_id, media_name, url_image, media_order, duration_seconds, start_time, end_time } = row;
 
             if (!tvs[tv_id]) {
                 tvs[tv_id] = {
                     id: tv_id,
-                    name,
+                    tv_name,
                     tv_slug,
-                    images: []
+                    medias: []
                 };
             }
 
-            if (image_id) {
-                tvs[tv_id].images.push({
-                    id: image_id,
+            if (media_id) {
+                tvs[tv_id].medias.push({
+                    id: media_id,
                     media_name,
                     url_image,
                     media_order,

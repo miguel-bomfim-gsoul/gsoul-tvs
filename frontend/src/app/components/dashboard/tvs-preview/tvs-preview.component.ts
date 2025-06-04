@@ -1,20 +1,8 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
-
-interface MediaType {
-  id: number
-  url_image: string
-  media_order: number
-}
-
-interface TvType {
-  id: number
-  name: string
-  tv_slug: string
-  images?: MediaType[]
-}
+import { TvType } from "../../../core/services/tv.service"
 
 @Component({
   selector: 'app-tvs-preview',
@@ -38,6 +26,6 @@ export class TvsPreviewComponent {
   }
 
   onClickViewTv() {
-    window.open(`/tv/${this.tv.tv_slug}`, '_blank');
+    window.open(`/tv/${this.tv.id}`, '_blank');
   }
 }

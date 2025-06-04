@@ -36,6 +36,18 @@
 .tv-card-title {
   font-size: 16px;
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tv-card-title span {
+  font-size: 10px;
+  font-weight: 500;
+  color: white;
+  background-color: #494949;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 .tv-card-images {
