@@ -21,22 +21,25 @@
                 <mat-form-field class="input-field" appearance="outline" color="primary">
                     <div style="display: flex; gap: 12px;">
                         <mat-icon>search</mat-icon>
-                        <input  matInput type="text" [(ngModel)]="value" placeholder="Buscar TV">
+                        <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar TV">
+                
                     </div>
                     
-                    @if (value) {
-                        <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                    @if (searchControl) {
+                        <button matSuffix mat-icon-button aria-label="Clear" (click)="searchControl.setValue('')">
                         <mat-icon>close</mat-icon>
                         </button>
                     }
                 </mat-form-field>
+
             }
         </div>
         @if (isEditing) {
             <app-tv-edit [selectedTv]="selectedTv" />
-        } @else {
+        } @else {          
+            <p style="text-align: center;">{{ searchError() }}</p>  
             <ul style="margin-top: 12px;">
-                @for (tv of tvs(); track tv.id) {
+                @for (tv of filteredTvs(); track tv.id) {
                     <li>
                         <app-tvs-preview
                             [tv]="tv"

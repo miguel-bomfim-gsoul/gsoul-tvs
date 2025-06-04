@@ -5,12 +5,14 @@ import { TvEditComponent } from './tv-edit/tv-edit.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { AuthGoogleService } from "../../core/services/auth-google.service";
 import { TvService, TvType } from '../../core/services/tv.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatProgressSpinnerModule,
     MatButtonModule,
     MatIconModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatFormFieldModule,
     CommonModule
@@ -31,18 +33,39 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export class DashboardComponent implements OnInit {
   tvs = signal<TvType[] | undefined>(undefined);
+  filteredTvs = signal<TvType[] | undefined>([]);
   isFetching = signal<boolean>(false);
   error = signal<string | null>('');
-  value = '';
+  searchError = signal<string | null>('');
+  searchControl = new FormControl('');
   private destroyRef = inject(DestroyRef);
 
-    constructor(
-      public authService: AuthGoogleService,
-      private tvService: TvService
-    ) {}
+  constructor(
+    public authService: AuthGoogleService,
+    private tvService: TvService
+  ) {}
 
   ngOnInit() {
     this.loadTvs()
+  }
+
+  onInputChange(value: string) { 
+    this.filteredTvs.set(this.filterItems(value))
+
+    if(this.filterItems(value).length <= 0) {
+      this.searchError.set('Tv não encontrada')
+    } else {
+      this.searchError.set('')
+    }
+  }
+
+  private filterItems(searchTerm: string): TvType[] {
+    if (!searchTerm.trim()) {
+      return this.tvs() ?? [];
+    }
+    
+    const term = searchTerm.toLowerCase();
+    return (this.tvs() ?? []).filter(item =>item.tv_name.toLowerCase().includes(term));
   }
 
   private loadTvs() {
@@ -52,6 +75,7 @@ export class DashboardComponent implements OnInit {
       .subscribe({
         next: (resData) => {
           this.tvs.set(resData);
+          this.filteredTvs.set(resData)
           this.isFetching.set(false);
         },
         error: (error) => {
@@ -92,6 +116,7 @@ export class DashboardComponent implements OnInit {
     this.selectedTvId = id
     this.toggleEdit()
     this.selectedTv = this.tvs()?.find(tv => tv.id === Number(this.selectedTvId));
+    this.searchControl.setValue('')
   }
 
   onSelectTvDelete(id: string) {
