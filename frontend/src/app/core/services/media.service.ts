@@ -12,6 +12,7 @@ export interface MediaType {
   related_tvs: RelatedTv[]
   start_time: Date;
   end_time: Date;
+  tv_id: number | undefined;
 }
 
 export interface MediaByTvResponse {
@@ -25,8 +26,15 @@ export interface MediaByTvResponse {
 export class MediaService {
   constructor(private api: ApiService) {}
 
-  addMedia(media: Partial<MediaType>): Observable<{ id: number }> {
-    return this.api.post<{ id: number }>('media', media);
+  addMedia(mediaData: any): Observable<void> {
+    return this.api.post<void>('media', mediaData);
+  }
+
+  uploadMedia(file: File): Observable<{ fileName: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.api.post<{ fileName: string }>(`media/upload`, formData);
   }
 
   getMediaByTv(tvId: string): Observable<MediaByTvResponse[]> {

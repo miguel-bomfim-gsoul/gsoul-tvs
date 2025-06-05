@@ -4,7 +4,7 @@
   <p>Selecione as TVs onde esta mídia deve aparecer:</p>
   
   <div cdkDropList class="tv-list" (cdkDropListDropped)="onDrop($event)">
-    @for (tv of tvOptions; track tv.tv.id) {
+    @for (tv of tvOptions; track tv.tv.tv_id) {
       <div cdkDrag class="tv-item" [class.active]="tv.selected">
         <div class="tv-item-content">
           <div class="drag-handle" cdkDragHandle>
@@ -15,7 +15,7 @@
           
           <mat-checkbox [(ngModel)]="tv.selected" color="primary">
             {{ tv.tv.tv_name }}
-            <span class="tv-location">(#{{ tv.tv.id }})</span>
+            <span class="tv-location">(#{{ tv.tv.tv_id }})</span>
           </mat-checkbox>
           
           <div class="spacer"></div>

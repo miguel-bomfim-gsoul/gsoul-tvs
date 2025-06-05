@@ -5,51 +5,39 @@
         <p style="text-align: center; margin-top: 24px;">{{ error() }}</p>
     } @else {
         <div class="searchInputSection">
-            @if (isEditing) {
-                <button class="back-button" (click)="toggleEdit()" mat-flat-button>
-                    <span class="action-button">
-                        <mat-icon>chevron_left</mat-icon>Voltar
-                    </span>
-                </button>
-            } @else {
-                <button class="addTvButton" (click)="addTv()" mat-flat-button>
-                    <span class="action-button">
-                        <mat-icon >add</mat-icon>Add TV
-                    </span>
-                </button>
+            <button class="addTvButton" (click)="addTv()" mat-flat-button>
+                <span class="action-button">
+                    <mat-icon >add</mat-icon>Add TV
+                </span>
+            </button>
 
-                <mat-form-field class="input-field" appearance="outline" color="primary">
-                    <div style="display: flex; gap: 12px;">
-                        <mat-icon>search</mat-icon>
-                        <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar TV">
+            <mat-form-field class="input-field" appearance="outline" color="primary">
+                <div style="display: flex; gap: 12px;">
+                    <mat-icon>search</mat-icon>
+                    <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar TV">
+            
+                </div>
                 
-                    </div>
-                    
-                    @if (searchControl) {
-                        <button matSuffix mat-icon-button aria-label="Clear" (click)="searchControl.setValue('')">
-                        <mat-icon>close</mat-icon>
-                        </button>
-                    }
-                </mat-form-field>
-
-            }
-        </div>
-        @if (isEditing) {
-            <app-tv-edit [selectedTv]="selectedTv" />
-        } @else {          
-            <p style="text-align: center;">{{ searchError() }}</p>  
-            <ul style="margin-top: 12px;">
-                @for (tv of filteredTvs(); track tv.id) {
-                    <li>
-                        <app-tvs-preview
-                            [tv]="tv"
-                            [selectedTv]="selectedTv"
-                            (edit)="onSelectTvEdit($event)"
-                            (delete)="onSelectTvDelete($event)"
-                        />
-                    </li>
+                @if (searchControl) {
+                    <button matSuffix mat-icon-button aria-label="Clear" (click)="searchControl.setValue('')">
+                    <mat-icon>close</mat-icon>
+                    </button>
                 }
-            </ul>
+            </mat-form-field>
+        </div>
+        <p style="text-align: center;">{{ searchError() }}</p>  
+        <ul style="margin-top: 12px;">
+            @for (tv of filteredTvs(); track tv.tv_id) {
+                <li>
+                    <app-tvs-preview
+                        [tv]="tv"
+                        [selectedTv]="selectedTv"
+                        (edit)="onSelectTvEdit($event)"
+                        (delete)="onSelectTvDelete($event)"
+                    />
+                </li>
+            }
+        </ul>
         }
-    }
+ 
 </section>

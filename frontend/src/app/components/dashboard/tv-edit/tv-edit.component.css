@@ -1,3 +1,22 @@
+.dashboard-edit {
+    padding: 32px 64px;
+}
+
+.back-button{
+  margin-top: 8px;
+  margin-bottom: 32px;
+  background-color: #d8871c;
+  padding: 12px;
+  align-self: flex-start;
+}
+
+.action-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
 .table-header {
   align-items: center;
   justify-content: space-between;

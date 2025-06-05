@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MediaService, MediaByTvResponse } from '../../core/services/media.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-tv',
@@ -15,6 +16,7 @@ export class TvComponent implements OnInit {
   intervalId: any;
   private destroyRef = inject(DestroyRef)
   private route = inject(ActivatedRoute);
+  mediaBaseUrl = environment.apiUrl
 
   constructor(
     private mediaService: MediaService

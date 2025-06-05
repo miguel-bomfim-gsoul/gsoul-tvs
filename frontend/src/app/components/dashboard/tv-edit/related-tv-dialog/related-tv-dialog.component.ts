@@ -63,7 +63,7 @@ export class RelatedTvDialogComponent implements OnInit {
       this.allTVs = tvs;
       this.tvOptions = this.allTVs.map((tv, index) => ({
         tv,
-        selected: this.relatedTvs.some(related => related.tv_id === tv.id),
+        selected: this.relatedTvs.some(related => related.tv_id === tv.tv_id),
         order: index + 1
       }));
     });
@@ -84,7 +84,7 @@ export class RelatedTvDialogComponent implements OnInit {
   onSave(): void {
     const selectedTVs = this.tvOptions
       .filter(tvOption => tvOption.selected)
-      .map(tvOption => tvOption.tv.id);
+      .map(tvOption => tvOption.tv.tv_id);
     
     this.dialogRef.close({
       tvs: selectedTVs

@@ -3,6 +3,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { TvType } from "../../../core/services/tv.service"
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-tvs-preview',
@@ -16,16 +17,17 @@ export class TvsPreviewComponent {
   @Input({ required: true }) tv!: TvType;
   @Output() edit = new EventEmitter()
   @Output() delete = new EventEmitter()
+  mediaBaseUrl = environment.apiUrl
 
   onClickEdit() {
-    this.edit.emit(this.tv.id)
+    this.edit.emit(this.tv.tv_id)
   }
 
   onClickDelete() {
-    this.delete.emit(this.tv.id)
+    this.delete.emit(this.tv.tv_id)
   }
 
   onClickViewTv() {
-    window.open(`/tv/${this.tv.id}`, '_blank');
+    window.open(`/tv/${this.tv.tv_id}`, '_blank');
   }
 }

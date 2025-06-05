@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 import { MediaType } from "./media.service"
 
 export interface TvType {
-  id: number;
+  tv_id: number;
   tv_name: string;
   tv_slug: string;
   medias?: MediaType[];

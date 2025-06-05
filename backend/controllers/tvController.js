@@ -46,7 +46,7 @@ export async function getallTVs(req, res) {
 
       if (!tvs[tv_id]) {
         tvs[tv_id] = {
-          id: tv_id,
+          tv_id: tv_id,
           tv_name,
           tv_slug,
           medias: []
@@ -88,11 +88,54 @@ export async function getRelatedTvs(req, res) {
 export async function getTvById(req, res) {
   const { id } = req.params;
 
+  const query = `
+    SELECT
+      t.id AS tv_id,
+      t.name AS tv_name,
+      m.id AS media_id,
+      m.name AS media_name,
+      m.url_image,
+      mt.media_order,
+      mt.duration_seconds,
+      mt.start_time,
+      mt.end_time
+    FROM
+      tvs t
+    LEFT JOIN
+      media_tv mt ON t.id = mt.tv_id
+    LEFT JOIN
+      media m ON m.id = mt.media_id
+    WHERE
+      t.id = ?
+    ORDER BY
+      mt.media_order;
+  `;
+
   try {
-    const [results] = await db.query('SELECT * FROM tvs WHERE id = ?', [id]);
-    res.json(results[0]);
+    const [results] = await db.query(query, [id]);
+
+    // Group media under a single TV object
+    if (results.length === 0) {
+      return res.status(404).json({ message: "TV not found" });
+    }
+
+    const tvResponse = {
+      tv_id: results[0].tv_id,
+      tv_name: results[0].tv_name,
+      medias: !results[0].url_image ? [] : results.map(row => ({
+        media_id: row.media_id,
+        media_name: row.media_name,
+        url_image: row.url_image,
+        media_order: row.media_order,
+        duration_seconds: row.duration_seconds,
+        start_time: row.start_time,
+        end_time: row.end_time
+      }))
+    };
+
+    res.json(tvResponse);
   } catch (err) {
-    console.error(err);
+    console.error("Error fetching TV data:", err);
     res.status(500).json({ error: err.message });
   }
 }

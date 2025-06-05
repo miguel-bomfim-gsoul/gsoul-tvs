@@ -1,7 +1,6 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TvsPreviewComponent } from './tvs-preview/tvs-preview.component';
-import { TvEditComponent } from './tv-edit/tv-edit.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -11,12 +10,12 @@ import { AuthGoogleService } from "../../core/services/auth-google.service";
 import { TvService, TvType } from '../../core/services/tv.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-dashboard',
   imports: [
     TvsPreviewComponent,
-    TvEditComponent,
     MatProgressSpinnerModule,
     MatButtonModule,
     MatIconModule,
@@ -40,7 +39,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     public authService: AuthGoogleService,
-    private tvService: TvService
+    private tvService: TvService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -94,7 +94,7 @@ export class DashboardComponent implements OnInit {
 
   addTv() {
     const newTv = {
-      name: 'New TV'
+      name: 'Nova TV'
     };
 
     this.tvService.createTv(newTv)
@@ -111,9 +111,9 @@ export class DashboardComponent implements OnInit {
   }
 
   onSelectTvEdit(id: string) {
+    this.router.navigate(['/dashboard/edit', id]);
     this.selectedTvId = id
-    this.toggleEdit()
-    this.selectedTv = this.tvs()?.find(tv => tv.id === Number(this.selectedTvId));
+    this.selectedTv = this.tvs()?.find(tv => tv.tv_id === Number(this.selectedTvId));
     this.searchControl.setValue('')
   }
 

@@ -1,10 +1,9 @@
 <div class="carousel-container">
   @for (image of medias(); track $index; let i = $index) {
-    <div
+    <img
       class="carousel-slide"
       [class.active]="i === currentIndex"
-      [style.backgroundImage]="'url(' + image.url_image + ')'"
+      [src]="mediaBaseUrl + '/' +  image.url_image"
     >
-    </div>
   }
 </div>

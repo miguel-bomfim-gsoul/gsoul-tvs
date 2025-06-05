@@ -9,13 +9,6 @@
     margin-bottom: 32px;
 }
 
-.back-button{
-    margin-top: 8px;
-    background-color: #d8871c;
-    padding: 12px;
-    align-self: flex-start;
-}
-
 .addTvButton {
     color: white;
     background-color: #494949;
