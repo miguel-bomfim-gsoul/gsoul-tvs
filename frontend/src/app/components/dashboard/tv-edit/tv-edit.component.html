@@ -76,14 +76,14 @@
           </ng-container>
 
           <!-- TVs Column -->
-          <!-- <ng-container matColumnDef="tvs">
-            <th mat-header-cell *matHeaderCellDef> TVs </th>
+          <ng-container matColumnDef="tvs">
+            <th mat-header-cell *matHeaderCellDef> TVs Relacionadas </th>
             <td mat-cell *matCellDef="let item">
-              <button mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Manage TVs">
+              <button [disabled]="getTvCount(item) <= 0" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
                 {{ getTvCount(item) }}
               </button>
             </td>
-          </ng-container> -->
+          </ng-container>
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">

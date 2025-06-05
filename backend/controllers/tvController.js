@@ -66,6 +66,14 @@ export async function getallTVs (req, res) {
     })
 }
 
+export async function getRelatedTvs (req, res){
+    const { id } = req.params;
+    db.query('SELECT tv_id, media_order FROM media_tv WHERE media_id = ?', [id], (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json(results);
+    })
+}
+
 export async function getTvById (req, res){
     const { id } = req.params;
     db.query('SELECT * FROM tvs WHERE id = ?', [id], (err, results) => {

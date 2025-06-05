@@ -11,8 +11,6 @@ import { AuthGoogleService } from "../../core/services/auth-google.service";
 import { TvService, TvType } from '../../core/services/tv.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',

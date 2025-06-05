@@ -10,6 +10,11 @@ export interface TvType {
   medias?: MediaType[];
 }
 
+export interface RelatedTv {
+  tv_id: number
+  media_order: number
+}
+
 export interface CreateTvResponse {
   status: string;
 }
@@ -22,6 +27,10 @@ export class TvService {
 
   getAllTvs(): Observable<TvType[]> {
     return this.api.get<TvType[]>('tvs');
+  }
+
+  getRelatedTvs(id: number): Observable<RelatedTv[]> {
+    return this.api.get<RelatedTv[]>(`tvs/related/${id}`);
   }
 
   getTvById(id: number): Observable<TvType> {

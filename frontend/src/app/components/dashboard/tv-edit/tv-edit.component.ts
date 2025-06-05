@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Input, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, Input, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,10 +14,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
-import { MediaItem } from '../../../types/media-type';
-import { MediaType } from '../../../core/services/media.service';
-import { TvType} from '../../../core/services/tv.service';
+import { MediaType, MediaService } from '../../../core/services/media.service';
+import { TvType, TvService, RelatedTv } from '../../../core/services/tv.service';
 import { RelatedTvDialogComponent } from './related-tv-dialog/related-tv-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tv-edit',
@@ -39,43 +41,63 @@ import { RelatedTvDialogComponent } from './related-tv-dialog/related-tv-dialog.
     ReactiveFormsModule
   ],
   providers: [provideNativeDateAdapter()],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tv-edit.component.html',
   styleUrl: './tv-edit.component.css'
 })
+
 export class TvEditComponent implements OnInit {
   @Input({ required: true }) selectedTv?: TvType
+  related_tvs = signal<RelatedTv[]>([])
   mediaItems: MediaType[] | undefined = []
-  displayedColumns: string[] = ['order', 'thumbnail', 'name', 'duration', 'dates', /*'tvs'*/ 'actions'];
-  dataSource = new MatTableDataSource<MediaType>([]);  
+  displayedColumns: string[] = ['order', 'thumbnail', 'name', 'duration', 'dates', 'tvs', 'actions'];
+  dataSource = new MatTableDataSource<MediaType>([]);
+  private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
 
   constructor(
-    // private mediaService: MediaService,
+    private tvService: TvService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     if (this.selectedTv?.medias) {
-      this.dataSource = new MatTableDataSource<MediaType>(this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order));
-    }
+    const sortedMedias = this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order);
 
-    // this.mediaService.getMediaItems().subscribe({
-    //   next: (resData) => {
-    //     this.mediaItems = [...resData].sort((a, b) => a.order - b.order)
-    //     console.log('mediaItems', this.mediaItems)
-    //   }
-    // });
+    const mediaRequests = sortedMedias.map(media =>
+      this.loadRelatedTvs(media.id).pipe(
+        map(related => ({
+          ...media,
+          related_tvs: related
+        }))
+      )
+    );
+
+    forkJoin(mediaRequests)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (mediaWithRelatedTvs: (MediaType & { related_tvs: RelatedTv[] })[]) => {
+          this.mediaItems = mediaWithRelatedTvs;
+          this.dataSource = new MatTableDataSource(mediaWithRelatedTvs);
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Failed to load related TVs for media:', err)
+      });
+  }
   }
 
-  onDrop(event: CdkDragDrop<MediaItem[]>): void {
+  private loadRelatedTvs(mediaId: number): Observable<RelatedTv[]> {
+    return this.tvService.getRelatedTvs(mediaId);
+  }
+
+  onDrop(event: CdkDragDrop<MediaType[]>): void {
     moveItemInArray(this.mediaItems ?? [], event.previousIndex, event.currentIndex);
     // this.mediaService.updateMediaOrder(this.mediaItems);
   }
 
-  openRelatedTvDialog(item: MediaItem): void {
+  openRelatedTvDialog(item: MediaType & { related_tvs?: RelatedTv[] }): void {
     const dialogRef = this.dialog.open(RelatedTvDialogComponent, {
       width: '600px',
-      data: { mediaItem: item }
+      data: { mediaItem: item.related_tvs ?? [] } // ← envia os related_tvs reais
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -85,7 +107,7 @@ export class TvEditComponent implements OnInit {
     });
   }
 
-  updateDates(item: MediaItem, startDate: Date | null, endDate: Date | null): void {
+  updateDates(item: MediaType, startDate: Date | null, endDate: Date | null): void {
     const updatedItem = { ...item, startDate, endDate };
     // this.mediaService.updateMediaItem(updatedItem);
   }
@@ -95,7 +117,7 @@ export class TvEditComponent implements OnInit {
     return date.toLocaleDateString();
   }
 
-  getTvCount(item: MediaItem): number {
-    return item.tvs.length;
+  getTvCount(item: MediaType & { related_tvs?: RelatedTv[] }): number {
+    return item.related_tvs?.length ?? 0;
   }
 }

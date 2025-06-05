@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { RelatedTv } from './tv.service'
 
 export interface MediaType {
   id: number;
@@ -8,6 +9,7 @@ export interface MediaType {
   url_image: string;
   media_order: number;
   duration_seconds: number;
+  related_tvs: RelatedTv[]
   start_time: Date;
   end_time: Date;
 }
