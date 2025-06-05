@@ -33,7 +33,12 @@ export class MediaService {
     return this.api.get<MediaByTvResponse[]>(`media/${tvId}`);
   }
 
-  updateMediaOrder(mediaId: number, newOrder: number): Observable<void> {
-    return this.api.put<void>(`media/${mediaId}/order`, { media_order: newOrder });
+  // fix it here and in the backend
+  updateMediaOrder(media_id: number, tv_id: number, media_order: number): Observable<void> {
+    return this.api.put<void>(`media/update-order`, {
+      media_id,
+      tv_id,
+      media_order
+    });
   }
 }

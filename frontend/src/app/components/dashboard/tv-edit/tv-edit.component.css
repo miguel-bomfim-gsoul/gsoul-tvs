@@ -30,6 +30,15 @@ td, th {
   gap: 4px;
 }
 
+.order-cell input {
+  width: 33px;
+  padding: 4px;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid;
+  font-family: 'Rubik';
+}
+
 .type-cell {
   display: flex;
   align-items: center;

@@ -10,6 +10,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -30,6 +31,7 @@ import { map } from 'rxjs/operators';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
     DragDropModule,
@@ -56,37 +58,54 @@ export class TvEditComponent implements OnInit {
 
   constructor(
     private tvService: TvService,
+    private mediaService: MediaService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     if (this.selectedTv?.medias) {
-    const sortedMedias = this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order);
+      const sortedMedias = this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order);
 
-    const mediaRequests = sortedMedias.map(media =>
-      this.loadRelatedTvs(media.id).pipe(
-        map(related => ({
-          ...media,
-          related_tvs: related
-        }))
-      )
-    );
+      const mediaRequests = sortedMedias.map(media =>
+        this.loadRelatedTvs(media.id).pipe(
+          map(related => ({
+            ...media,
+            related_tvs: related
+          }))
+        )
+      );
 
-    forkJoin(mediaRequests)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (mediaWithRelatedTvs: (MediaType & { related_tvs: RelatedTv[] })[]) => {
-          this.mediaItems = mediaWithRelatedTvs;
-          this.dataSource = new MatTableDataSource(mediaWithRelatedTvs);
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Failed to load related TVs for media:', err)
-      });
-  }
+      forkJoin(mediaRequests)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (mediaWithRelatedTvs: (MediaType & { related_tvs: RelatedTv[] })[]) => {
+            this.mediaItems = mediaWithRelatedTvs;
+            this.dataSource = new MatTableDataSource(mediaWithRelatedTvs);
+            this.cdr.detectChanges();
+          },
+          error: (err) => console.error('Failed to load related TVs for media:', err)
+        });
+    }
   }
 
   private loadRelatedTvs(mediaId: number): Observable<RelatedTv[]> {
     return this.tvService.getRelatedTvs(mediaId);
+  }
+
+  onMediaOrderBlur(event: FocusEvent, item: MediaType) {
+    // const target = event.target as HTMLInputElement;
+    // const newOrder = parseInt(target.value);
+
+    // if (!isNaN(newOrder) && newOrder !== item.media_order) {
+    //   this.mediaService.updateMediaOrder(item.id, this.selectedTv!.id, newOrder)
+    //     .pipe(takeUntilDestroyed(this.destroyRef))
+    //     .subscribe({
+    //       next: () => {
+    //         item.media_order = newOrder;
+    //       },
+    //       error: (err) => console.error('Error updating media order:', err)
+    //     });
+    // }
   }
 
   onDrop(event: CdkDragDrop<MediaType[]>): void {

@@ -13,7 +13,6 @@ export class TvComponent implements OnInit {
   medias = signal<MediaByTvResponse[]>([]);
   currentIndex = 0;
   intervalId: any;
-  timer = 15000;
   private destroyRef = inject(DestroyRef)
   private route = inject(ActivatedRoute);
 
@@ -22,17 +21,19 @@ export class TvComponent implements OnInit {
   ) {}
 
   startCarousel() {
-  const runCarousel = () => {
-    const mediasArray = this.medias();
-    if (!mediasArray.length) return;
-  
-    this.currentIndex = (this.currentIndex + 1) % mediasArray.length;
-    const currentMedia = mediasArray[this.currentIndex];
-    const duration = (Number(currentMedia.duration_seconds)) * 1000;
-    this.intervalId = setTimeout(runCarousel, duration);
-  }
+    const runCarousel = () => {
+      const mediasArray = this.medias();
+      if (!mediasArray.length) return;
 
-  runCarousel()
+      const currentMedia = mediasArray[this.currentIndex];
+      const duration = (Number(currentMedia.duration_seconds)) * 1000;
+      this.intervalId = setTimeout(() => {
+        this.currentIndex = (this.currentIndex + 1) % mediasArray.length;
+        runCarousel();
+      }, duration);
+    }
+
+    runCarousel()
 
   }
 
