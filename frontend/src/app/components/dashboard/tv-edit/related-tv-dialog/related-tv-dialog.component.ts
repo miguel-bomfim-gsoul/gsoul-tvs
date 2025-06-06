@@ -11,7 +11,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatListModule } from '@angular/material/list';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
-import { MediaService } from '../../../../core/services/media.service';
 import { TvService, TvType, RelatedTv } from '../../../../core/services/tv.service';
 
 interface DialogData {
@@ -51,14 +50,12 @@ export class RelatedTvDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<RelatedTvDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private mediaService: MediaService,
     private tvService: TvService
   ) {
     this.relatedTvs = data.mediaItem;
   }
 
   ngOnInit(): void {
-    console.log('related')
     this.tvService.getAllTvs().subscribe(tvs => {
       this.allTVs = tvs;
       this.tvOptions = this.allTVs.map((tv, index) => ({

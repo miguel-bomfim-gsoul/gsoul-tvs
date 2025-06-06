@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 import { RelatedTv } from './tv.service'
 
 export interface MediaType {
-  id: number;
+  media_id: number;
   media_name: string;
   url_image: string;
   media_order: number;
@@ -41,12 +41,16 @@ export class MediaService {
     return this.api.get<MediaByTvResponse[]>(`media/${tvId}`);
   }
 
-  // fix it here and in the backend
-  updateMediaOrder(media_id: number, tv_id: number, media_order: number): Observable<void> {
-    return this.api.put<void>(`media/update-order`, {
-      media_id,
+  updateMediaOrder(tv_id: number, media_id: number, newOrder: number): Observable<void> {
+    console.log('reponse to back',{
       tv_id,
-      media_order
+      media_id,
+      newOrder
+    })
+    return this.api.put<void>(`media/update-order`, {
+      tv_id,
+      media_id,
+      newOrder
     });
   }
 }

@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>TVs Relacionadas</h2>
 
 <mat-dialog-content>
-  <p>Selecione as TVs onde esta mídia deve aparecer:</p>
+  <p>Selecione a TV onde esta mídia deve aparecer:</p>
   
   <div cdkDropList class="tv-list" (cdkDropListDropped)="onDrop($event)">
     @for (tv of tvOptions; track tv.tv.tv_id) {

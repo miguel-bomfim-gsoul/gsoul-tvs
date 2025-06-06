@@ -66,17 +66,13 @@ export async function updateMediaOrder(req, res) {
     await connection.beginTransaction();
 
     const [rows] = await connection.query(
-      `SELECT media_order FROM media_tv WHERE tv_id = ? AND media_id = ?`,
-      [tv_id, media_id]
+      `SELECT media_order, media_id FROM media_tv WHERE tv_id = ?`,
+      [tv_id]
     );
 
     if (rows.length > 0) {
-      const oldOrder = rows[0].media_order;
-
-      await connection.query(
-        `UPDATE media_tv SET media_order = -1 WHERE tv_id = ? AND media_id = ?`,
-        [tv_id, media_id]
-      );
+      
+      const oldOrder = rows.find((media) => media.media_id === media_id).media_order;
 
       if (newOrder < oldOrder) {
         await connection.query(
@@ -84,9 +80,11 @@ export async function updateMediaOrder(req, res) {
             SET media_order = media_order + 1 
             WHERE tv_id = ? 
             AND media_order IS NOT NULL
-            AND media_order >= ? 
-            AND media_order < ?`,
-            [tv_id, newOrder, oldOrder]
+            AND media_order >= ?
+            AND media_id != ?
+            AND media_order < ?
+            `,
+            [tv_id, newOrder, media_id, oldOrder]
         );
       } else if (newOrder > oldOrder) {
         await connection.query(
@@ -94,9 +92,11 @@ export async function updateMediaOrder(req, res) {
           SET media_order = media_order - 1 
           WHERE tv_id = ? 
           AND media_order IS NOT NULL
-          AND media_order > ? 
-          AND media_order <= ?`,
-          [tv_id, oldOrder, newOrder]
+          AND media_order <= ? 
+          AND media_id != ?
+          AND media_order > ?
+          `,
+          [tv_id, newOrder, media_id, oldOrder]
         );
       }
 
@@ -104,6 +104,7 @@ export async function updateMediaOrder(req, res) {
         `UPDATE media_tv SET media_order = ? WHERE tv_id = ? AND media_id = ?`,
         [newOrder, tv_id, media_id]
       );
+
     }
 
     await connection.commit();

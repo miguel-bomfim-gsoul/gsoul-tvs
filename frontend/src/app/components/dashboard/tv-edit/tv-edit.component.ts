@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, Input, ChangeDetectorRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -56,7 +56,7 @@ export class TvEditComponent implements OnInit {
   dataSource = new MatTableDataSource<MediaType>([]);
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
-  maxFileSizeMB = 5; // Ideal limit
+  maxFileSizeMB = 5;
   mediaBaseUrl = environment.apiUrl
 
   constructor(
@@ -68,31 +68,7 @@ export class TvEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadTv()
-
-    if (this.selectedTv?.medias) {
-      const sortedMedias = this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order);
-
-      const mediaRequests = sortedMedias.map(media =>
-        this.loadRelatedTvs(media.id).pipe(
-          map(related => ({
-            ...media,
-            related_tvs: related
-          }))
-        )
-      );
-
-      forkJoin(mediaRequests)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (mediaWithRelatedTvs: (MediaType & { related_tvs: RelatedTv[] })[]) => {
-            this.mediaItems = mediaWithRelatedTvs;
-            this.dataSource = new MatTableDataSource(mediaWithRelatedTvs);
-            this.cdr.detectChanges();
-          },
-          error: (err) => console.error('Failed to load related TVs for media:', err)
-        });
-    }
+    this.loadMedias()
   }
 
 onFileUpload(event: any) {
@@ -117,7 +93,7 @@ onFileUpload(event: any) {
       }).subscribe({
       next: () => {
         this.mediaItems?.push({
-          id: 12,
+          media_id: 12,
           media_name: file.name,
           url_image: `${this.mediaBaseUrl}/assets/tv-media/${fileName}`,
           media_order: 0,
@@ -130,7 +106,7 @@ onFileUpload(event: any) {
         this.dataSource.data = [...(this.mediaItems ?? [])];
         this.cdr.detectChanges();
       },
-      complete: () => {this.loadTv()}  
+      complete: () => {this.loadMedias()}  
       });
     },
     error: (err) => console.error('File upload failed', err),
@@ -141,7 +117,7 @@ returnDashboard() {
   this.router.navigate(['/dashboard']);
 }
 
-loadTv() {
+loadMedias() {
   this.route.paramMap.subscribe(params => {
     const tv_id = params.get('tv_id');
 
@@ -150,12 +126,35 @@ loadTv() {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (resData) => {
-            console.log('tvData', resData);
-
             this.selectedTv = resData;
             this.mediaItems = resData.medias;
             this.dataSource.data = [...(this.mediaItems ?? [])];
             this.cdr.detectChanges(); // ✅ Force UI update
+          },
+          complete: () => {
+            if (this.selectedTv && this.selectedTv.medias) {
+              const sortedMedias = this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order);
+
+              const mediaRequests = sortedMedias.map(media =>
+                this.loadRelatedTvs(media.media_id).pipe(
+                  map(related => ({
+                    ...media,
+                    related_tvs: related
+                  }))
+                )
+              );
+
+              forkJoin(mediaRequests)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
+                  next: (mediaWithRelatedTvs: (MediaType & { related_tvs: RelatedTv[] })[]) => {
+                    this.mediaItems = mediaWithRelatedTvs;
+                    this.dataSource = new MatTableDataSource(mediaWithRelatedTvs);
+                    this.cdr.detectChanges();
+                  },
+                  error: (err) => console.error('Failed to load related TVs for media:', err)
+                });
+            }
           }
         });
     }
@@ -166,7 +165,26 @@ loadTv() {
     return this.tvService.getRelatedTvs(mediaId);
   }
 
-  onMediaOrderBlur(event: FocusEvent, item: MediaType) {
+  onMediaOrderBlur(event: FocusEvent | Event, item: MediaType) {
+    const target = event.target as HTMLInputElement;
+    const newOrder = parseInt(target.value);
+
+    if (!isNaN(newOrder) && newOrder !== item.media_order) {
+      this.mediaService.updateMediaOrder(this.selectedTv!.tv_id, item.media_id, newOrder)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            item.media_order = newOrder;
+          },
+          complete: () => {
+            this.loadMedias()
+          },
+          error: (err) => console.error('Error updating media order:', err)
+        });
+    }
+  }
+
+  onMediaDurationBlur(event: FocusEvent, duration: number) {
     // const target = event.target as HTMLInputElement;
     // const newOrder = parseInt(target.value);
 
@@ -183,14 +201,24 @@ loadTv() {
   }
 
   onDrop(event: CdkDragDrop<MediaType[]>): void {
-    moveItemInArray(this.mediaItems ?? [], event.previousIndex, event.currentIndex);
-    // this.mediaService.updateMediaOrder(this.mediaItems);
+    console.log('media', event)
+    
+    moveItemInArray(this.dataSource.data ?? [], event.previousIndex, event.currentIndex);
+    this.mediaService.updateMediaOrder(this.selectedTv!.tv_id, event.item.data.media_id, event.currentIndex + 1)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          error: (err) => console.error('Error updating media order:', err)
+        });
+    this.dataSource.data = this.dataSource.data.map((item, index) => ({
+      ...item,
+      media_order: index + 1
+    }));
   }
 
   openRelatedTvDialog(item: MediaType & { related_tvs?: RelatedTv[] }): void {
     const dialogRef = this.dialog.open(RelatedTvDialogComponent, {
       width: '600px',
-      data: { mediaItem: item.related_tvs ?? [] } // ← envia os related_tvs reais
+      data: { mediaItem: item.related_tvs ?? [] }
     });
 
     dialogRef.afterClosed().subscribe(result => {
