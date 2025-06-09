@@ -20,14 +20,42 @@ export interface MediaByTvResponse {
   duration_seconds: string;
 }
 
+export interface MediasType {
+  media_id: string;
+  name: string;
+  url_image: string;
+  tv_id: string;
+  start_time: Date;
+  end_time: Date;
+  related_tvs?: RelatedTv[]
+}
+
+export interface MediaAddByTvType {
+  media_id: number;
+  tv_ids: number[];
+  unselectedTvsIds: number[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MediaService {
   constructor(private api: ApiService) {}
 
+  getAllMedia(): Observable<MediasType[]> {
+    return this.api.get<MediasType[]>('media/medias',);
+  }
+
   addMedia(mediaData: any): Observable<void> {
     return this.api.post<void>('media', mediaData);
+  }
+
+  addSingleMedia(mediaData: any): Observable<void> {
+    return this.api.post<void>('media/add', mediaData);
+  }
+
+  relateMediaTv(mediaTvData: MediaAddByTvType): Observable<void> {
+    return this.api.post<void>('media/relate', mediaTvData);
   }
 
   uploadMedia(file: File): Observable<{ fileName: string }> {
@@ -42,11 +70,6 @@ export class MediaService {
   }
 
   updateMediaOrder(tv_id: number, media_id: number, newOrder: number): Observable<void> {
-    console.log('reponse to back',{
-      tv_id,
-      media_id,
-      newOrder
-    })
     return this.api.put<void>(`media/update-order`, {
       tv_id,
       media_id,

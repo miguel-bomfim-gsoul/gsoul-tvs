@@ -3,17 +3,11 @@
 <mat-dialog-content>
   <p>Selecione a TV onde esta mídia deve aparecer:</p>
   
-  <div cdkDropList class="tv-list" (cdkDropListDropped)="onDrop($event)">
+  <div class="tv-list">
     @for (tv of tvOptions; track tv.tv.tv_id) {
-      <div cdkDrag class="tv-item" [class.active]="tv.selected">
-        <div class="tv-item-content">
-          <div class="drag-handle" cdkDragHandle>
-            <span class="material-icons">drag_indicator</span>
-          </div>
-          
-          <div class="tv-order">{{ tv.order }}</div>
-          
-          <mat-checkbox [(ngModel)]="tv.selected" color="primary">
+      <div class="tv-item" [class.active]="tv.selected">
+        <div class="tv-item-content">       
+          <mat-checkbox (change)="onCheckboxChange($event, tv)" [checked]="tv.selected" color="primary">
             {{ tv.tv.tv_name }}
             <span class="tv-location">(#{{ tv.tv.tv_id }})</span>
           </mat-checkbox>

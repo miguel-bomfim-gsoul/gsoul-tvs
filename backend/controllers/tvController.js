@@ -145,6 +145,7 @@ export async function deleteTv(req, res) {
 
   try {
     await db.query('DELETE FROM tvs WHERE id = ?', [id]);
+    await db.query('DELETE FROM media_tv WHERE tv_id = ?', [id]);
     res.json('Tv deletada com sucesso!');
   } catch (err) {
     console.error(err);

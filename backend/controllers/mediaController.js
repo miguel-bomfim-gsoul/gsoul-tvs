@@ -1,6 +1,36 @@
 import db from '../db.js';
 
-// Upload Media Endpoint
+export async function getAllMedias(req, res) {
+    const query = `
+    SELECT
+      m.id AS media_id,
+      m.name,
+      m.url_image,
+      mt.tv_id,
+      mt.start_time,
+      mt.end_time
+    FROM media m
+    LEFT JOIN (
+        SELECT *
+        FROM media_tv
+        WHERE id IN (
+            SELECT MIN(id)
+            FROM media_tv
+            GROUP BY media_id
+        )
+    ) mt ON m.id = mt.media_id
+    LEFT JOIN tvs ON mt.tv_id = tvs.id;
+  `;
+
+  try {
+    const [results] = await db.query(query);
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
 export async function uploadMedia(req, res) {
   try {
     const file = req.file;
@@ -36,6 +66,58 @@ export async function addMedia(req, res) {
   }
 }
 
+export async function addSingleMedia(req, res) {
+  const { name } = req.body;
+  const url_image = `assets/${name}`
+
+  try {
+    const [result] = await db.query('INSERT INTO media VALUES(0, ?, ?)', [name, url_image]);
+    res.status(201).json({ status: `Ok! media with id: ${result.insertId} created` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function relateMediaTv(req, res) {
+  let { media_id, tv_ids, unselectedTvsIds} = req.body;
+
+  if (!Array.isArray(tv_ids)) {
+    tv_ids = tv_ids != null ? [ tv_ids ] : [];
+  }
+
+  const values = [];
+  
+  for (const tvId of tv_ids) {
+    // Get the current max media_order for that tv
+    const [[{ nextOrder }]] = await db.query(
+      `SELECT COALESCE(MAX(media_order), 0) + 1 AS nextOrder FROM media_tv WHERE tv_id = ?`,
+      [tvId]
+    );
+
+    // Push into values array for bulk insert
+    values.push([media_id, tvId, nextOrder]);
+  }
+
+  // Bulk insert into media_tv
+  const placeholders = values.map(() => '(?, ?, ?)').join(', ');
+  const flatValues = values.flat();
+  try {
+    if (tv_ids.length > 0) {
+      await db.query(`INSERT IGNORE INTO media_tv (media_id, tv_id, media_order) VALUES ${placeholders}`, flatValues);
+    }
+    if (unselectedTvsIds.length > 0) {
+      const placeholders = unselectedTvsIds.map(() => '?').join(', ');
+      const deleteQuery = `DELETE FROM media_tv WHERE media_id = ? AND tv_id IN (${placeholders})`;
+      await db.query(deleteQuery, [media_id, ...unselectedTvsIds]);
+    }
+    res.status(201).json();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
 export async function getMediaByTv(req, res) {
   const { tv_id } = req.params;
   const query = `
@@ -46,6 +128,7 @@ export async function getMediaByTv(req, res) {
     JOIN media_tv ON media.id = media_tv.media_id
     JOIN tvs ON media_tv.tv_id = tvs.id
     WHERE tvs.id = ?
+    ORDER BY media_tv.media_order;
   `;
 
   try {
@@ -57,7 +140,6 @@ export async function getMediaByTv(req, res) {
   }
 }
 
-// fix it
 export async function updateMediaOrder(req, res) {
   const { tv_id, media_id, newOrder } = req.body;
 

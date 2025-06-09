@@ -1,11 +1,11 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TvsPreviewComponent } from './tvs-preview/tvs-preview.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { AuthGoogleService } from "../../core/services/auth-google.service";
 import { TvService, TvType } from '../../core/services/tv.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -36,6 +36,9 @@ export class DashboardComponent implements OnInit {
   searchError = signal<string | null>('');
   searchControl = new FormControl('');
   private destroyRef = inject(DestroyRef);
+  isEditing: boolean = false;
+  selectedTvId?: string
+  selectedTv?: TvType
 
   constructor(
     public authService: AuthGoogleService,
@@ -83,10 +86,6 @@ export class DashboardComponent implements OnInit {
         }
       });
   }
-
-  isEditing: boolean = false;
-  selectedTvId?: string
-  selectedTv?: TvType
   
   toggleEdit() {
     this.isEditing = !this.isEditing;

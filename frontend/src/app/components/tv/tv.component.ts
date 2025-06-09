@@ -49,6 +49,7 @@ export class TvComponent implements OnInit {
           .subscribe({
             next: (resData) => {
               this.medias.set(resData);
+
             },
             complete: () => {
               this.startCarousel();

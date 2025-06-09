@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { addMedia, getMediaByTv, updateMediaOrder, uploadMedia } from '../controllers/mediaController.js'
+import { addMedia, getAllMedias, getMediaByTv, updateMediaOrder, uploadMedia, relateMediaTv, addSingleMedia } from '../controllers/mediaController.js'
 
-// Configure Multer (File Upload)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'assets/');
@@ -19,9 +18,13 @@ const upload = multer({
 
 const router = Router();
 
+router.get('/medias', getAllMedias);
 router.post('/upload', upload.single('file'), uploadMedia);
 router.post('/', addMedia);
+router.post('/add', addSingleMedia);
+router.post('/relate', relateMediaTv);
 router.get('/:tv_id', getMediaByTv);
 router.put('/update-order', updateMediaOrder);
 
 export default router;
+

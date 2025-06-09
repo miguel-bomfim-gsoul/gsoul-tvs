@@ -200,9 +200,7 @@ loadMedias() {
     // }
   }
 
-  onDrop(event: CdkDragDrop<MediaType[]>): void {
-    console.log('media', event)
-    
+  onDrop(event: CdkDragDrop<MediaType[]>): void {    
     moveItemInArray(this.dataSource.data ?? [], event.previousIndex, event.currentIndex);
     this.mediaService.updateMediaOrder(this.selectedTv!.tv_id, event.item.data.media_id, event.currentIndex + 1)
         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -218,12 +216,12 @@ loadMedias() {
   openRelatedTvDialog(item: MediaType & { related_tvs?: RelatedTv[] }): void {
     const dialogRef = this.dialog.open(RelatedTvDialogComponent, {
       width: '600px',
-      data: { mediaItem: item.related_tvs ?? [] }
+      data: { mediaId: item.media_id , relatedTvs: item.related_tvs ?? [] }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // this.mediaService.updateMediaTVs(item.id, result.tvs);
+    dialogRef.afterClosed().subscribe({
+      next: () => {
+        this.loadMedias()
       }
     });
   }
