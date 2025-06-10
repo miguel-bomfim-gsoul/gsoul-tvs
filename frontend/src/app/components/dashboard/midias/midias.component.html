@@ -1,15 +1,27 @@
 <section class="medias-section">
-
-    <div class="header-actions">
-        <mat-form-field class="input-field" appearance="outline" color="primary">
-            <div style="display: flex; gap: 12px;">
-                <mat-icon>search</mat-icon>
-                <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar mídia">
-            </div>
-        </mat-form-field>
+    <div class="top-pagination-search">
+        <div class="header-actions">
+            <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Nova mídia</button>
+            <input hidden (change)="onFileUpload($event)" #fileInput type="file" id="file">
+        </div>
+        <div style="display: flex;">
+            <mat-form-field class="input-field" appearance="outline" color="primary">
+                <div style="display: flex; gap: 12px;">
+                    <mat-icon>search</mat-icon>
+                    <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar mídia">
+                </div>
+            </mat-form-field>
     
-        <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Nova mídia</button>
-        <input hidden (change)="onFileUpload($event)" #fileInput type="file" id="file">
+            <mat-paginator
+                (page)="onPageChange($event)"
+                [length]="mediasLength"
+                [pageIndex]="currentPage() - 1"
+                [pageSize]="limitPageSize()"
+                aria-label="Selecione a página"
+                [hidePageSize]="true"
+            >
+            </mat-paginator>
+        </div>
     </div>
 
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 media-table">
@@ -28,7 +40,7 @@
         <ng-container matColumnDef="tvs">
             <th mat-header-cell *matHeaderCellDef> TVs Relacionadas </th>
             <td mat-cell *matCellDef="let item">
-            <button [class.button-disabled]="getTvCount(item) <= 0" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
+            <button class="related-tvs-button" [class.button-disabled]="getTvCount(item) <= 0" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
                 {{ getTvCount(item) }}
             </button>
             </td>

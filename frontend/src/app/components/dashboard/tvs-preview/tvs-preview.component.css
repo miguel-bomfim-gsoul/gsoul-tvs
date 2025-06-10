@@ -57,6 +57,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 16px;
+  overflow: hidden;
 }
 
 .tv-card-images img {

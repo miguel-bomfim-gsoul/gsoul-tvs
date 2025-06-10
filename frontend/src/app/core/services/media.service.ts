@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { RelatedTv } from './tv.service'
 
@@ -42,8 +42,15 @@ export interface MediaAddByTvType {
 export class MediaService {
   constructor(private api: ApiService) {}
 
-  getAllMedia(): Observable<MediasType[]> {
-    return this.api.get<MediasType[]>('media/medias',);
+  getAllMedia(page?: number, limit?: number): Observable<MediasType[]> {
+    const p = page ? page : 1
+    let requestUrl = 'media/medias'
+
+    if(p && limit) {
+      requestUrl += `?p=${p}&limit=${limit}`
+    }
+
+    return this.api.get<MediasType[]>(requestUrl);
   }
 
   addMedia(mediaData: any): Observable<void> {

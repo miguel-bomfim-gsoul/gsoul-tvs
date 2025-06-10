@@ -7,7 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function getAllMedias(req, res) {
-    const query = `
+  const { p } = req.query || 1; // page
+  const limit = req.query.limit ? parseInt(req.query.limit) : null;
+  const offset = limit ? (p - 1) * limit : 0;
+
+  const query = `
     SELECT
       m.id AS media_id,
       m.name,
@@ -25,11 +29,14 @@ export async function getAllMedias(req, res) {
             GROUP BY media_id
         )
     ) mt ON m.id = mt.media_id
-    LEFT JOIN tvs ON mt.tv_id = tvs.id;
+    LEFT JOIN tvs ON mt.tv_id = tvs.id
+    ${limit ? 'LIMIT ? OFFSET ?' : ''};
   `;
 
+  const queryParams = limit ? [limit, offset] : [];
+
   try {
-    const [results] = await db.query(query);
+    const [results] = await db.query(query, queryParams);
     res.json(results);
   } catch (err) {
     console.error(err);
