@@ -1,7 +1,7 @@
 import { Component, OnInit, DestroyRef, signal, ChangeDetectorRef, inject } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MediaService, MediasType } from '../../../core/services/media.service'
-import { TvType, TvService, RelatedTv } from '../../../core/services/tv.service';
+import { TvService, RelatedTv } from '../../../core/services/tv.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -91,20 +91,25 @@ export class MidiasComponent implements OnInit {
               )
             );
 
-            if (mediaRequests) {
+            if (mediaRequests.length > 0) {
               forkJoin(mediaRequests)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                   next: (mediaWithRelatedTvs: (MediasType & { related_tvs: RelatedTv[] })[]) => {
-                    this.medias.set(mediaWithRelatedTvs)
-                    this.filteredMedia.set(mediaWithRelatedTvs)
-                    this.dataSource.data = mediaWithRelatedTvs
-                    this.cdr.detectChanges();
+                    this.medias.set(mediaWithRelatedTvs);
+                    this.filteredMedia.set(mediaWithRelatedTvs);
+                    this.dataSource.data = [...mediaWithRelatedTvs]; // cria nova referência
+                    this.cdr.detectChanges(); // força atualização
                   },
                   error: (err) => console.error('Failed to load related TVs for media:', err)
                 });
+            } else {
+              // Nenhuma mídia para processar
+              this.medias.set([]);
+              this.filteredMedia.set([]);
+              this.dataSource.data = [];
+              this.cdr.detectChanges(); // Força renderização correta da tabela
             }
-
         },
         error: (error) => {
           console.error('Error fetching data:', error);
@@ -143,5 +148,15 @@ export class MidiasComponent implements OnInit {
 
   getTvCount(item: MediasType & { related_tvs?: RelatedTv[] }): number {
     return item.related_tvs?.length ?? 0;
+  }
+
+  deleteMedia(media_id: number) {
+    this.mediaService.deleteMedia(media_id)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (resData) => {
+        this.loadMedias()
+      }
+    })
   }
 }

@@ -76,4 +76,8 @@ export class MediaService {
       newOrder
     });
   }
+
+  deleteMedia(media_id: number): Observable<void> {
+    return this.api.delete<void>(`media/delete/${media_id}`);
+  }
 }

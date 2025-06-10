@@ -1,6 +1,15 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { addMedia, getAllMedias, getMediaByTv, updateMediaOrder, uploadMedia, relateMediaTv, addSingleMedia } from '../controllers/mediaController.js'
+import {
+  addMedia,
+  getAllMedias,
+  getMediaByTv,
+  updateMediaOrder,
+  uploadMedia,
+  relateMediaTv,
+  addSingleMedia,
+  deleteMedia
+} from '../controllers/mediaController.js'
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,6 +34,7 @@ router.post('/add', addSingleMedia);
 router.post('/relate', relateMediaTv);
 router.get('/:tv_id', getMediaByTv);
 router.put('/update-order', updateMediaOrder);
+router.delete('/delete/:media_id', deleteMedia);
 
 export default router;
 

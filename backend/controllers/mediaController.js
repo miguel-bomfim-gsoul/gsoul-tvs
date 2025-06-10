@@ -1,4 +1,10 @@
 import db from '../db.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export async function getAllMedias(req, res) {
     const query = `
@@ -89,17 +95,14 @@ export async function relateMediaTv(req, res) {
   const values = [];
   
   for (const tvId of tv_ids) {
-    // Get the current max media_order for that tv
     const [[{ nextOrder }]] = await db.query(
       `SELECT COALESCE(MAX(media_order), 0) + 1 AS nextOrder FROM media_tv WHERE tv_id = ?`,
       [tvId]
     );
 
-    // Push into values array for bulk insert
     values.push([media_id, tvId, nextOrder]);
   }
 
-  // Bulk insert into media_tv
   const placeholders = values.map(() => '(?, ?, ?)').join(', ');
   const flatValues = values.flat();
   try {
@@ -203,5 +206,44 @@ export async function updateMediaOrder(req, res) {
     res.status(500).json({ success: false, error: err.message });
   } finally {
     connection.release();
+  }
+}
+
+export async function deleteMedia(req, res) {
+  const { media_id } = req.params;
+
+  try {
+    const [media] = await db.query('SELECT * FROM media WHERE id = ?', [media_id]);
+    if (!media.length) return res.status(404).json({ error: 'Mídia não encontrada' });
+
+    const fileName = media[0].url_image;
+    const filePath = path.join(__dirname, '..', fileName);
+
+    const [mediaTvEntries] = await db.query('SELECT * FROM media_tv WHERE media_id = ?', [media_id]);
+
+    for (const entry of mediaTvEntries) {
+      const { tv_id, media_order } = entry;
+
+      await db.query(
+        `UPDATE media_tv 
+         SET media_order = media_order - 1
+         WHERE tv_id = ? 
+         AND media_order > ?`,
+        [tv_id, media_order]
+      );
+    }
+
+    await db.query('DELETE FROM media_tv WHERE media_id = ?', [media_id]);
+
+    await db.query('DELETE FROM media WHERE id = ?', [media_id]);
+
+        if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    return res.json('Mídia deletada com sucesso');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Something went wrong' });
   }
 }

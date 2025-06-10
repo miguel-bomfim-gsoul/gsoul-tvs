@@ -53,11 +53,11 @@ export class DashboardComponent implements OnInit {
   onInputChange(value: string) { 
     this.filteredTvs.set(this.filterItems(value))
 
-    if(this.filterItems(value).length <= 0) {
-      this.searchError.set('Tv não encontrada')
-    } else {
-      this.searchError.set('')
-    }
+    // if(this.filterItems(value).length <= 0) {
+    //   this.searchError.set('Tv não encontrada')
+    // } else {
+    //   this.searchError.set('')
+    // }
   }
 
   private filterItems(searchTerm: string): TvType[] {

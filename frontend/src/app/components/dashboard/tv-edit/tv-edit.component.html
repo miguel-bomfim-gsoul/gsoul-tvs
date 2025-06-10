@@ -10,7 +10,7 @@
       <mat-card-header class="table-header">
         <mat-card-title class="tv-title">📺{{ selectedTv?.tv_name }}</mat-card-title>
         <mat-card-actions align="end">
-          <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Adicionar nova mídia</button>
+          <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Nova mídia</button>
           <input hidden (change)="onFileUpload($event)" #fileInput type="file" id="file">
         </mat-card-actions>
       </mat-card-header>
@@ -61,7 +61,7 @@
                     class="order-duration-input"
                     matInput
                     type="number"
-                    [value]="mediaItems && mediaItems[0].duration_seconds || 10"
+                    [value]="mediaItems ? mediaItems[0].duration_seconds : 0"
                     (focusout)="onMediaDurationBlur($event, 10)"
                   /><span style="margin-left: -4px;">s</span>
                 </span>
