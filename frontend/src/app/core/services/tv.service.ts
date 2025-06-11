@@ -41,6 +41,10 @@ export class TvService {
     return this.api.post<CreateTvResponse>('tvs', tv);
   }
 
+  updateName(newNameData: {name: string, tv_id: number}): Observable<void> {
+    return this.api.put<void>('tvs/name', newNameData);
+  }
+
   deleteTv(id: number): Observable<string> {
     return this.api.delete<string>(`tvs/${id}`);
   }

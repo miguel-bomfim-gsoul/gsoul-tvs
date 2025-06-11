@@ -1,7 +1,22 @@
 <mat-card class="tv-card" appearance="outlined">
   <mat-card-header class="tv-card-header">
     <div mat-card-avatar class="card-header-image"></div>
-    <mat-card-title class="tv-card-title">{{tv.tv_name}}<span>#{{tv.tv_id}}</span></mat-card-title>
+    <mat-card-title class="tv-card-title">
+      @if (!editingName) {
+        <span (click)="startEditingTitle()" class="editable-title">{{ tv.tv_name }}</span>
+      } @else {
+        <input
+          #nameInput
+          type="text"
+          [(ngModel)]="editedName"
+          class="editable-input"
+          (blur)="saveName()"
+          (keydown.enter)="saveName()"
+          (keydown.esc)="cancelEditingTitle()"
+        />
+      }
+      <span class="tv-id">#{{ tv.tv_id }}</span>
+    </mat-card-title>
     <mat-icon (click)="onClickDelete()" class="delete-tv-icon">delete</mat-icon>
   </mat-card-header>
   <div class="tv-card-images">

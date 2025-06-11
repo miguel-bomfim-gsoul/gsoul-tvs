@@ -98,7 +98,8 @@ export async function getTvById(req, res) {
       mt.media_order,
       mt.duration_seconds,
       mt.start_time,
-      mt.end_time
+      mt.end_time,
+      mt.is_active
     FROM
       tvs t
     LEFT JOIN
@@ -129,7 +130,8 @@ export async function getTvById(req, res) {
         media_order: row.media_order,
         duration_seconds: row.duration_seconds,
         start_time: row.start_time,
-        end_time: row.end_time
+        end_time: row.end_time,
+        is_active: row.is_active
       }))
     };
 
@@ -147,6 +149,18 @@ export async function deleteTv(req, res) {
     await db.query('DELETE FROM tvs WHERE id = ?', [id]);
     await db.query('DELETE FROM media_tv WHERE tv_id = ?', [id]);
     res.json('Tv deletada com sucesso!');
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function updateTvName(req, res) {
+  const { name, tv_id } = req.body;
+
+  try {
+    await db.query('UPDATE tvs SET name = ? WHERE id = ? ', [name, tv_id]);
+    res.status(201).json({ status: `Ok! Nome da tv #${tv_id} alterado para ${name}` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

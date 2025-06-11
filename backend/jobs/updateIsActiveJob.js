@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import db from '../db.js';
 
 export function startIsActiveJob() {
-  cron.schedule('*/1 * * * *', async () => {
+  cron.schedule('*/5 * * * *', async () => {
     try {
       await db.execute(`
         UPDATE media_tv

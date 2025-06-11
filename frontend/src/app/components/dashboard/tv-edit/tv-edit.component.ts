@@ -191,22 +191,6 @@ loadMedias() {
     }
   }
 
-  onMediaDurationBlur(event: FocusEvent, duration: number) {
-    // const target = event.target as HTMLInputElement;
-    // const newOrder = parseInt(target.value);
-
-    // if (!isNaN(newOrder) && newOrder !== item.media_order) {
-    //   this.mediaService.updateMediaOrder(item.id, this.selectedTv!.id, newOrder)
-    //     .pipe(takeUntilDestroyed(this.destroyRef))
-    //     .subscribe({
-    //       next: () => {
-    //         item.media_order = newOrder;
-    //       },
-    //       error: (err) => console.error('Error updating media order:', err)
-    //     });
-    // }
-  }
-
   onDrop(event: CdkDragDrop<MediaType[]>): void {    
     moveItemInArray(this.dataSource.data ?? [], event.previousIndex, event.currentIndex);
     this.mediaService.updateMediaOrder(this.selectedTv!.tv_id, event.item.data.media_id, event.currentIndex + 1)
@@ -237,7 +221,6 @@ loadMedias() {
     if (!startDate) return;
 
     this.mediaService.updateMediaDate(this.selectedTv?.tv_id, item.media_id, { start_time: startDate }).subscribe({
-      next: () => console.log('Start date updated'),
       error: err => console.error(err)
     });
   }
@@ -246,7 +229,9 @@ loadMedias() {
     if (!endDate) return;
 
     this.mediaService.updateMediaDate(this.selectedTv?.tv_id, item.media_id, { end_time: endDate }).subscribe({
-      next: () => console.log('End date updated'),
+      next: () => {
+        this.loadMedias()
+      },
       error: err => console.error(err)
     });
   }

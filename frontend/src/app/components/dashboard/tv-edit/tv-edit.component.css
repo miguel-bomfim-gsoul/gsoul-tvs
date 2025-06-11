@@ -1,5 +1,9 @@
 .dashboard-edit {
-    padding: 32px 64px;
+  padding: 32px 64px;
+}
+
+.imageIsNotActive {
+  filter: contrast(0.5);
 }
 
 .back-button{
@@ -139,9 +143,16 @@ td, th {
 .status {
   width: 10px;
   height: 10px;
-  background: red;
   border-radius: 100%;
   display: inline-block;
+}
+
+.statusNotActive {
+  background: red;
+}
+
+.statusActive {
+  background: rgb(72, 255, 0);
 }
 
 .related-tvs-button:hover {

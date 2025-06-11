@@ -138,6 +138,7 @@ export async function getMediaByTv(req, res) {
     JOIN media_tv ON media.id = media_tv.media_id
     JOIN tvs ON media_tv.tv_id = tvs.id
     WHERE tvs.id = ?
+    AND media_tv.is_active = 1
     ORDER BY media_tv.media_order;
   `;
 

@@ -4,6 +4,21 @@
   border-radius: 24px;
 }
 
+.editable-title {
+  cursor: text;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+
+.editable-input {
+  font-weight: 600;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background: transparent;
+  width: auto;
+}
+
 .tv-card-header {
   display: flex;
   width: 100%;
@@ -41,7 +56,7 @@
   gap: 4px;
 }
 
-.tv-card-title span {
+.tv-id {
   font-size: 10px;
   font-weight: 500;
   color: white;

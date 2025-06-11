@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { RelatedTv } from './tv.service'
 
@@ -13,6 +13,7 @@ export interface MediaType {
   start_time: Date | null;
   end_time: Date | null;
   tv_id: number | undefined;
+  is_active?: 0 | 1
 }
 
 export interface MediaByTvResponse {
@@ -85,7 +86,7 @@ export class MediaService {
     });
   }
 
-  updateMediaDate(tv_id: number | undefined, media_id: number | undefined, payload: { start_time?: Date, end_time?: Date }) {
+  updateMediaDate(tv_id: number | undefined, media_id: number | undefined, payload: { start_time?: Date, end_time?: Date | null }) {
     return this.api.put('media/update-date', {
       ...payload,
       media_id,
