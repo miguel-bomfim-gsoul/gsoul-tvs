@@ -8,7 +8,8 @@ import {
   uploadMedia,
   relateMediaTv,
   addSingleMedia,
-  deleteMedia
+  deleteMedia,
+  updateDate
 } from '../controllers/mediaController.js'
 
 const storage = multer.diskStorage({
@@ -34,6 +35,7 @@ router.post('/add', addSingleMedia);
 router.post('/relate', relateMediaTv);
 router.get('/:tv_id', getMediaByTv);
 router.put('/update-order', updateMediaOrder);
+router.put('/update-date', updateDate);
 router.delete('/delete/:media_id', deleteMedia);
 
 export default router;

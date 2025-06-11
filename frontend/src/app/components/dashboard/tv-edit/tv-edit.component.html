@@ -81,13 +81,13 @@
                           matStartDate
                           [value]="item.start_time"
                           placeholder="Data inicial"
-                          (dateChange)="updateDates(item, $event.value, item.start_time)"
+                          (dateChange)="updateStartDate(item, $event.value)"
                         >
                         <input
                           matEndDate
                           [value]="item.end_time"
                           placeholder="Data final"
-                          (dateChange)="updateDates(item, $event.value, item.end_time)"
+                          (dateChange)="updateEndDate(item, $event.value)"
                         >
                     </mat-date-range-input>
                     <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
@@ -110,11 +110,9 @@
   
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef> Ações </th>
+              <th mat-header-cell *matHeaderCellDef> Status </th>
               <td mat-cell *matCellDef="let item">
-                <button mat-icon-button matTooltip="Delete">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                <span class="status"></span>
               </td>
             </ng-container>
   

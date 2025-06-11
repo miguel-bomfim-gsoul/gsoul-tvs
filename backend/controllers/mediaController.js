@@ -60,8 +60,8 @@ export async function addMedia(req, res) {
   const { name, media_order, duration_seconds, start_time, end_time, uploadedFileName, tv_id } = req.body;
   const url_image = `assets/${uploadedFileName}`;
 
-  const formattedStartTime = start_time ? new Date(start_time).toISOString().slice(0, 19).replace('T', ' ') : null;
-  const formattedEndTime = end_time ? new Date(end_time).toISOString().slice(0, 19).replace('T', ' ') : null;
+  const formattedStartTime = start_time ? new Date(start_time) : null;
+  const formattedEndTime = end_time ? new Date(end_time) : null;
 
   const mediaQuery = 'INSERT INTO media (name, url_image) VALUES (?, ?)';
   const mediaTvQuery = 'INSERT INTO media_tv (media_id, tv_id, media_order, duration_seconds, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)';
@@ -147,6 +147,53 @@ export async function getMediaByTv(req, res) {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
+  }
+}
+
+export async function updateDate(req, res) {
+  const { start_time, end_time, media_id, tv_id } = req.body
+
+  let fields = [];
+  let values = [];
+
+  if (start_time) {
+    fields.push('start_time = ?');
+    values.push(new Date(start_time));
+  }
+
+  if (end_time) {
+    fields.push('end_time = ?');
+    values.push(new Date(end_time));
+  }
+
+  values.push(media_id, tv_id); 
+
+  const query = `
+    UPDATE media_tv
+    SET ${fields.join(', ')}
+    WHERE media_id = ?
+    AND tv_id = ?
+  `;
+
+  try {
+    const [results] = await db.query(query, values);
+
+    await db.query(`
+      UPDATE media_tv
+      SET is_active = (
+        CASE
+          WHEN start_time IS NOT NULL
+            AND (end_time IS NULL OR NOW() <= end_time)
+            AND NOW() >= start_time
+          THEN TRUE
+          ELSE FALSE
+        END
+      )
+    `);
+    res.status(200).json(results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json();
   }
 }
 

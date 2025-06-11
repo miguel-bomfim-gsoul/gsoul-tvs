@@ -52,7 +52,7 @@ export class TvEditComponent implements OnInit {
   selectedTv?: TvType
   related_tvs = signal<RelatedTv[]>([])
   mediaItems: MediaType[] | undefined = []
-  displayedColumns: string[] = ['order', 'thumbnail', 'name', 'duration', 'dates', 'tvs', 'actions'];
+  displayedColumns: string[] = ['order', 'thumbnail', 'name','tvs', 'duration' , 'dates', 'actions'];
   dataSource = new MatTableDataSource<MediaType>([]);
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
@@ -93,20 +93,21 @@ onFileUpload(event: any) {
       }).subscribe({
       next: () => {
         this.mediaItems?.push({
-          media_id: 12,
           media_name: file.name,
           url_image: `${this.mediaBaseUrl}/assets/tv-media/${fileName}`,
           media_order: 0,
           duration_seconds: 0,
           related_tvs: [],
           start_time: new Date(),
-          end_time: new Date(),
+          end_time: null,
           tv_id: this.selectedTv?.tv_id
         });
         this.dataSource.data = [...(this.mediaItems ?? [])];
         this.cdr.detectChanges();
       },
-      complete: () => {this.loadMedias()}  
+      complete: () => {
+        this.loadMedias()
+      }  
       });
     },
     error: (err) => console.error('File upload failed', err),
@@ -135,14 +136,16 @@ loadMedias() {
             if (this.selectedTv && this.selectedTv.medias) {
               const sortedMedias = this.selectedTv.medias.sort((a, b) => a.media_order - b.media_order);
 
-              const mediaRequests = sortedMedias.map(media =>
-                this.loadRelatedTvs(media.media_id).pipe(
-                  map(related => ({
-                    ...media,
-                    related_tvs: related
-                  }))
-                )
-              );
+              const mediaRequests = sortedMedias
+                .filter(media => media.media_id !== undefined)
+                .map(media =>
+                  this.loadRelatedTvs(media.media_id as number).pipe(
+                    map(related => ({
+                      ...media,
+                      related_tvs: related
+                    }))
+                  )
+                );
 
               forkJoin(mediaRequests)
                 .pipe(takeUntilDestroyed(this.destroyRef))
@@ -170,17 +173,21 @@ loadMedias() {
     const newOrder = parseInt(target.value);
 
     if (!isNaN(newOrder) && newOrder !== item.media_order) {
-      this.mediaService.updateMediaOrder(this.selectedTv!.tv_id, item.media_id, newOrder)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            item.media_order = newOrder;
-          },
-          complete: () => {
-            this.loadMedias()
-          },
-          error: (err) => console.error('Error updating media order:', err)
-        });
+      if (item.media_id !== undefined) {
+        this.mediaService.updateMediaOrder(this.selectedTv!.tv_id, item.media_id, newOrder)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              item.media_order = newOrder;
+            },
+            complete: () => {
+              this.loadMedias()
+            },
+            error: (err) => console.error('Error updating media order:', err)
+          });
+      } else {
+        console.error('media_id is undefined for item:', item);
+      }
     }
   }
 
@@ -226,14 +233,33 @@ loadMedias() {
     });
   }
 
-  updateDates(item: MediaType, startDate: Date | null, endDate: Date | null): void {
-    const updatedItem = { ...item, startDate, endDate };
-    // this.mediaService.updateMediaItem(updatedItem);
+  updateStartDate(item: MediaType, startDate: Date | null): void {
+    if (!startDate) return;
+
+    this.mediaService.updateMediaDate(this.selectedTv?.tv_id, item.media_id, { start_time: startDate }).subscribe({
+      next: () => console.log('Start date updated'),
+      error: err => console.error(err)
+    });
   }
 
-  formatDate(date: Date | null): string {
-    if (!date) return 'Not set';
-    return date.toLocaleDateString();
+  updateEndDate(item: MediaType, endDate: Date | null): void {
+    if (!endDate) return;
+
+    this.mediaService.updateMediaDate(this.selectedTv?.tv_id, item.media_id, { end_time: endDate }).subscribe({
+      next: () => console.log('End date updated'),
+      error: err => console.error(err)
+    });
+  }
+
+  formatDate(date: Date | null) {
+    if (!date) return null;
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',  
+      minute: '2-digit'
+    }).format(new Date(date));
   }
 
   getTvCount(item: MediaType & { related_tvs?: RelatedTv[] }): number {

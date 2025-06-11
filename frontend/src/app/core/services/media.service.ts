@@ -4,14 +4,14 @@ import { ApiService } from './api.service';
 import { RelatedTv } from './tv.service'
 
 export interface MediaType {
-  media_id: number;
+  media_id?: number;
   media_name: string;
   url_image: string;
   media_order: number;
   duration_seconds: number;
   related_tvs: RelatedTv[]
-  start_time: Date;
-  end_time: Date;
+  start_time: Date | null;
+  end_time: Date | null;
   tv_id: number | undefined;
 }
 
@@ -39,6 +39,7 @@ export interface MediaAddByTvType {
 @Injectable({
   providedIn: 'root'
 })
+
 export class MediaService {
   constructor(private api: ApiService) {}
 
@@ -81,6 +82,14 @@ export class MediaService {
       tv_id,
       media_id,
       newOrder
+    });
+  }
+
+  updateMediaDate(tv_id: number | undefined, media_id: number | undefined, payload: { start_time?: Date, end_time?: Date }) {
+    return this.api.put('media/update-date', {
+      ...payload,
+      media_id,
+      tv_id
     });
   }
 

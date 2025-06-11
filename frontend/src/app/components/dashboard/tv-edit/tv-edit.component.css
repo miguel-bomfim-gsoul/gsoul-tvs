@@ -136,6 +136,14 @@ td, th {
   box-shadow: 0px 0px 5px 3px rgba(197, 197, 197, 0.301);
 }
 
+.status {
+  width: 10px;
+  height: 10px;
+  background: red;
+  border-radius: 100%;
+  display: inline-block;
+}
+
 .related-tvs-button:hover {
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
 }
