@@ -5,6 +5,7 @@
       @if (!editingName) {
         <span (click)="startEditingTitle()" class="editable-title">{{ tv.tv_name }}</span>
       } @else {
+        <mat-icon class="edit-name-icon">edit</mat-icon>
         <input
           #nameInput
           type="text"

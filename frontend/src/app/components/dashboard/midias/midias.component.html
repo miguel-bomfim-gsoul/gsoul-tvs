@@ -1,17 +1,8 @@
 <section class="medias-section">
     <div class="top-pagination-search">
-        <div class="header-actions">
-            <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Nova mídia</button>
-            <input hidden (change)="onFileUpload($event)" #fileInput type="file" id="file">
-        </div>
+
         <div style="display: flex;">
-            <mat-form-field class="input-field" appearance="outline" color="primary">
-                <div style="display: flex; gap: 12px;">
-                    <mat-icon>search</mat-icon>
-                    <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar mídia">
-                </div>
-            </mat-form-field>
-    
+
             <mat-paginator
                 (page)="onPageChange($event)"
                 [length]="mediasLength"
@@ -21,6 +12,18 @@
                 [hidePageSize]="true"
             >
             </mat-paginator>
+            <mat-form-field class="input-field" appearance="outline" color="primary">
+                <div style="display: flex; gap: 12px;">
+                    <mat-icon>search</mat-icon>
+                    <input matInput [formControl]="searchControl" (ngModelChange)="onInputChange($event)" type="text" placeholder="Buscar mídia">
+                </div>
+            </mat-form-field>
+    
+            
+        </div>
+                <div class="header-actions">
+            <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Nova mídia</button>
+            <input hidden (change)="onFileUpload($event)" #fileInput type="file" id="file">
         </div>
     </div>
 

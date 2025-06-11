@@ -8,7 +8,7 @@
   <div class="container">
     <mat-card>
       <mat-card-header class="table-header">
-        <mat-card-title class="tv-title">📺{{ selectedTv?.tv_name }}</mat-card-title>
+        <mat-card-title class="tv-title"><mat-icon class="link-to-tv-icon" (click)="openTv()">link</mat-icon>{{ selectedTv?.tv_name }}<span class="tv-id">#{{ selectedTv?.tv_id }}</span></mat-card-title>
         <mat-card-actions align="end">
           <button type="button" mat-flat-button (click)="fileInput.click()"><mat-icon>add</mat-icon> Nova mídia</button>
           <input hidden (change)="onFileUpload($event)" #fileInput type="file" id="file">

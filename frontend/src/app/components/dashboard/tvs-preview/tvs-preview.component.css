@@ -10,13 +10,24 @@
   border-bottom: 1px solid #ccc;
 }
 
+.edit-name-icon {
+  color: #00000059;
+  font-size: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: -12px;
+}
+
 .editable-input {
   font-weight: 600;
+  font-size: 16px;
   border: none;
   border-bottom: 1px solid #ccc;
   outline: none;
   background: transparent;
-  width: auto;
+  width: 150px;
+  font-family: "Rubik", sans-serif;
 }
 
 .tv-card-header {

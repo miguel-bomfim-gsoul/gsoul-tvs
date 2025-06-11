@@ -71,7 +71,11 @@ export class TvEditComponent implements OnInit {
     this.loadMedias()
   }
 
-onFileUpload(event: any) {
+  openTv() {
+    window.open(`/tv/${this.selectedTv?.tv_id}`, '_blank'); 
+  }
+
+  onFileUpload(event: any) {
   const file: File = event.target.files[0];
 
   if (!file) return;

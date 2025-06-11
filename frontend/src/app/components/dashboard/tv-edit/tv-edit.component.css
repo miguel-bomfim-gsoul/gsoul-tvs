@@ -7,7 +7,6 @@
 }
 
 .back-button{
-  margin-top: 8px;
   margin-bottom: 32px;
   background-color: #d8871c;
   padding: 12px;
@@ -28,6 +27,23 @@
 
 .tv-title {
   font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.link-to-tv-icon {
+  color: rgb(7, 180, 248);
+  cursor: pointer;
+}
+
+.tv-id {
+  font-size: 10px;
+  font-weight: 500;
+  color: white;
+  background-color: #494949;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 .media-table {
@@ -135,7 +151,7 @@ td, th {
 }
 
 .related-tvs-button {
-  background-color: rgb(127, 219, 127);
+  background-color: rgb(195, 232, 247);
   color: black;
   box-shadow: 0px 0px 5px 3px rgba(197, 197, 197, 0.301);
 }

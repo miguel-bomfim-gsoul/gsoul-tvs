@@ -17,7 +17,6 @@ import { map } from 'rxjs/operators';
 import { RelatedTvDialogComponent } from '../tv-edit/related-tv-dialog/related-tv-dialog.component';
 import {MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import {Subject} from 'rxjs';
-import '@angular/localize/init';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
