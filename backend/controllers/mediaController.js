@@ -44,48 +44,76 @@ export async function getAllMedias(req, res) {
   }
 }
 
-export async function uploadMedia(req, res) {
-  try {
-    const file = req.file;
-    if (!file) return res.status(400).json({ error: 'No file uploaded' });
+  export async function uploadMedia(req, res) {
+    try {
+      const files = req.files;
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: 'No files uploaded' });
+      }
 
-    res.status(201).json({ fileName: file.filename });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+      const fileNames = files.map(file => file.filename);
+      res.status(201).json({ fileNames });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
   }
-}
 
-export async function addMedia(req, res) {
-  const { name, media_order, duration_seconds, start_time, end_time, uploadedFileName, tv_id } = req.body;
-  const url_image = `assets/${uploadedFileName}`;
+export async function addMultipleMediaToTv(req, res) {
+  const { mediaFiles, tv_id, duration_seconds = 10, start_time = null, end_time = null } = req.body;
+
+  if (!Array.isArray(mediaFiles) || !tv_id) {
+    return res.status(400).json({ error: 'Missing required data' });
+  }
 
   const formattedStartTime = start_time ? new Date(start_time) : null;
   const formattedEndTime = end_time ? new Date(end_time) : null;
 
-  const mediaQuery = 'INSERT INTO media (name, url_image) VALUES (?, ?)';
-  const mediaTvQuery = 'INSERT INTO media_tv (media_id, tv_id, media_order, duration_seconds, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)';
+  const mediaQuery = 'INSERT INTO media (name, url_image) VALUES ?';
+  const mediaTvQuery = 'INSERT INTO media_tv (media_id, tv_id, media_order, duration_seconds, start_time, end_time) VALUES ?';
+
+  const mediaValues = mediaFiles.map(f => [f.name, `assets/${f.uploadedFileName}`]);
 
   try {
-    const [mediaResult] = await db.query(mediaQuery, [name, url_image]);
-    const media_id = mediaResult.insertId;
+    const [mediaInsertResult] = await db.query(mediaQuery, [mediaValues]);
 
-    await db.query(mediaTvQuery, [media_id, tv_id, media_order, duration_seconds, formattedStartTime, formattedEndTime]);
+    const insertedMediaIdStart = mediaInsertResult.insertId;
 
-    res.status(201).json({ id: media_id });
+    const mediaTvValues = mediaFiles.map((f, i) => [
+      insertedMediaIdStart + i,
+      tv_id,
+      f.media_order ?? i + 1,
+      f.duration_seconds ?? duration_seconds,
+      formattedStartTime,
+      formattedEndTime
+    ]);
+
+    await db.query(mediaTvQuery, [mediaTvValues]);
+
+    res.status(201).json({ inserted: mediaFiles.length });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 }
 
-export async function addSingleMedia(req, res) {
-  const { name } = req.body;
-  const url_image = `assets/${name}`
+export async function addMultipleMedia(req, res) {
+  const { fileNames } = req.body;
+
+  console.log('filesNames', fileNames)
+
+  if (!Array.isArray(fileNames) || fileNames.length === 0) {
+    return res.status(400).json({ error: 'No file names provided' });
+  }
+
+  const values = fileNames.map(name => [name, `assets/${name}`]);
 
   try {
-    const [result] = await db.query('INSERT INTO media VALUES(0, ?, ?)', [name, url_image]);
-    res.status(201).json({ status: `Ok! media with id: ${result.insertId} created` });
+    const [result] = await db.query(
+      'INSERT INTO media (name, url_image) VALUES ?',
+      [values]
+    );
+    res.status(201).json({ inserted: result.affectedRows });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

@@ -7,7 +7,7 @@ import {
   updateMediaOrder,
   uploadMedia,
   relateMediaTv,
-  addSingleMedia,
+  addMultipleMedia,
   deleteMedia,
   updateDate
 } from '../controllers/mediaController.js'
@@ -29,9 +29,9 @@ const upload = multer({
 const router = Router();
 
 router.get('/medias', getAllMedias);
-router.post('/upload', upload.single('file'), uploadMedia);
-router.post('/', addMedia);
-router.post('/add', addSingleMedia);
+router.post('/upload', upload.array('files'), uploadMedia);
+router.post('/', addMultipleMediaToTv);
+router.post('/add', addMultipleMedia);
 router.post('/relate', relateMediaTv);
 router.get('/:tv_id', getMediaByTv);
 router.put('/update-order', updateMediaOrder);

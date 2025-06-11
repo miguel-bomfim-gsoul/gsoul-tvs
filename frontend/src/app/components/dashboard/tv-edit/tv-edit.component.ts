@@ -75,48 +75,44 @@ export class TvEditComponent implements OnInit {
     window.open(`/tv/${this.selectedTv?.tv_id}`, '_blank'); 
   }
 
-  onFileUpload(event: any) {
-  const file: File = event.target.files[0];
+  onFileUpload(event: any): void {
+    const files: FileList = event.target.files;
+    if (!files || files.length === 0) return;
 
-  if (!file) return;
-  if (file.size > this.maxFileSizeMB * 1024 * 1024) {
-    alert('File size exceeds the limit.');
-    return;
-  }
+    const validFiles: File[] = Array.from(files).filter(file => {
+      if (file.size > this.maxFileSizeMB * 1024 * 1024) {
+        alert(`File ${file.name} exceeds the size limit.`);
+        return false;
+      }
+      return true;
+    });
 
-  this.mediaService.uploadMedia(file).subscribe({
-    next: ({ fileName }) => {
-      this.mediaService.addMedia({
-        name: file.name,
-        media_order: (this.mediaItems?.length ?? 0) + 1,
-        duration_seconds: 10,
-        start_time: new Date(),
-        end_time: null,
-        uploadedFileName: fileName,
-        tv_id: this.selectedTv?.tv_id
-      }).subscribe({
-      next: () => {
-        this.mediaItems?.push({
-          media_name: file.name,
-          url_image: `${this.mediaBaseUrl}/assets/tv-media/${fileName}`,
-          media_order: 0,
-          duration_seconds: 0,
-          related_tvs: [],
+    if (validFiles.length === 0) return;
+
+    this.mediaService.uploadMedia(validFiles).subscribe({
+      next: ({ fileNames }) => {
+        const mediaItemsPayload = fileNames.map((fileName, index) => ({
+          name: validFiles[index].name,
+          uploadedFileName: fileName,
+          media_order: (this.mediaItems?.length ?? 0) + index + 1,
+          duration_seconds: 10
+        }));
+
+        this.mediaService.addMultipleMediaToTv({
+          mediaFiles: mediaItemsPayload,
+          tv_id: this.selectedTv?.tv_id!,
           start_time: new Date(),
-          end_time: null,
-          tv_id: this.selectedTv?.tv_id
+          end_time: null
+        }).subscribe({
+          next: () => {
+            this.loadMedias();
+          },
+          error: err => console.error('Failed to insert media to TV:', err)
         });
-        this.dataSource.data = [...(this.mediaItems ?? [])];
-        this.cdr.detectChanges();
       },
-      complete: () => {
-        this.loadMedias()
-      }  
-      });
-    },
-    error: (err) => console.error('File upload failed', err),
-  });
-}
+      error: err => console.error('Upload failed:', err)
+    });
+  }
 
 returnDashboard() {
   this.router.navigate(['/dashboard']);

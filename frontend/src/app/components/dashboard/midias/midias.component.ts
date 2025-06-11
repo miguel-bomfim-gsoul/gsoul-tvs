@@ -102,28 +102,33 @@ export class MidiasComponent implements OnInit  {
     });
   }
 
-  onFileUpload(event: any) {
-    const file: File = event.target.files[0];
+  onFileUpload(event: any): void {
+  const files: FileList = event.target.files;
+  if (!files || files.length === 0) return;
 
-    if (!file) return;
+  const validFiles: File[] = Array.from(files).filter(file => {
     if (file.size > this.maxFileSizeMB * 1024 * 1024) {
-      alert('File size exceeds the limit.');
-      return;
+      alert(`File ${file.name} exceeds the size limit.`);
+      return false;
     }
+    return true;
+  });
 
-    this.mediaService.uploadMedia(file).subscribe({
-      next: ({ fileName }) => {
-        this.mediaService.addSingleMedia({
-          name: fileName
-        }).subscribe({
-          next: () => {
-            this.loadMedias(this.currentPage(), this.limitPageSize())
-            this.loadAllMedias()
-          }
-        })
-      }
-    });
-  }
+  if (validFiles.length === 0) return;
+
+  this.mediaService.uploadMedia(validFiles).subscribe({
+    next: ({ fileNames }) => {
+      this.mediaService.addMultipleMedia(fileNames).subscribe({
+        next: () => {
+          this.loadMedias(this.currentPage(), this.limitPageSize());
+          this.loadAllMedias();
+        },
+        error: err => console.error('Error saving media metadata:', err)
+      });
+    },
+    error: err => console.error('Upload failed:', err)
+  });
+}
 
   private loadMedias(page?: number, limit?: number) {
     this.mediaService.getAllMedia(page, limit)
@@ -175,8 +180,7 @@ export class MidiasComponent implements OnInit  {
     });
   }
 
-  // load all medias
-    private loadAllMedias() {
+  private loadAllMedias() {
     this.mediaService.getAllMedia()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

@@ -55,23 +55,29 @@ export class MediaService {
     return this.api.get<MediasType[]>(requestUrl);
   }
 
-  addMedia(mediaData: any): Observable<void> {
-    return this.api.post<void>('media', mediaData);
+  addMultipleMediaToTv(mediaData: {
+    mediaFiles: { name: string; uploadedFileName: string; media_order?: number; duration_seconds?: number }[],
+    tv_id: number,
+    start_time?: Date | null,
+    end_time?: Date | null
+  }): Observable<any> {
+    return this.api.post('media', mediaData);
   }
-
-  addSingleMedia(mediaData: any): Observable<void> {
-    return this.api.post<void>('media/add', mediaData);
-  }
-
+  
   relateMediaTv(mediaTvData: MediaAddByTvType): Observable<void> {
     return this.api.post<void>('media/relate', mediaTvData);
   }
+  
+  addMultipleMedia(fileNames: string[]): Observable<void> {
+    console.log('files', fileNames)
+    return this.api.post<void>('media/add', {fileNames});
+  }
 
-  uploadMedia(file: File): Observable<{ fileName: string }> {
+  uploadMedia(files: File[]): Observable<{ fileNames: string[] }> {
     const formData = new FormData();
-    formData.append('file', file);
+    files.forEach(file => formData.append('files', file));
 
-    return this.api.post<{ fileName: string }>(`media/upload`, formData);
+    return this.api.post<{ fileNames: string[] }>(`media/upload`, formData);
   }
 
   getMediaByTv(tvId: string): Observable<MediaByTvResponse[]> {
