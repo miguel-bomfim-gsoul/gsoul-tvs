@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
   isEditing: boolean = false;
   selectedTvId?: string
   selectedTv?: TvType
-  createdTvId: number = 0
+  createdTvId: number | null = 0
 
   constructor(
     public authService: AuthGoogleService,
@@ -84,6 +84,7 @@ export class DashboardComponent implements OnInit {
             this.selectedTv = newTv;
             setTimeout(() => {
               this.selectedTv = undefined;
+              this.createdTvId = null
             }, 500);
           }
         },
