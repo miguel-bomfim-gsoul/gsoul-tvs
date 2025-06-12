@@ -7,7 +7,7 @@ export async function addTv(req, res) {
 
   try {
     const [result] = await db.query('INSERT INTO tvs VALUES(0, ?, ?)', [name, tv_slug]);
-    res.status(201).json({ status: `Ok! Tv with id: ${result.insertId} created` });
+    res.status(201).json({ status: `Ok! Tv with id: ${result.insertId} created`,  tv_id: result.insertId});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

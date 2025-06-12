@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit {
   isEditing: boolean = false;
   selectedTvId?: string
   selectedTv?: TvType
+  createdTvId: number = 0
 
   constructor(
     public authService: AuthGoogleService,
@@ -72,6 +73,15 @@ export class DashboardComponent implements OnInit {
           this.tvs.set(resData);
           this.filteredTvs.set(resData)
           this.isFetching.set(false);
+
+          const newTv = this.tvs()?.find(tv => tv.tv_id === this.createdTvId);
+          console.log('newTv', newTv)
+          if (newTv) {
+            this.selectedTv = newTv;
+            setTimeout(() => {
+              this.selectedTv = undefined;
+            }, 500);
+          }
         },
         error: (error) => {
           console.error('Error fetching data:', error);
@@ -93,7 +103,8 @@ export class DashboardComponent implements OnInit {
     this.tvService.createTv(newTv)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (res) => {
+          this.createdTvId = res.tv_id
           this.loadTvs();
         },
         error: (error) => {
@@ -111,6 +122,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onSelectTvDelete(id: string) {
+    this.createdTvId = 0
     this.tvService.deleteTv(Number(id))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

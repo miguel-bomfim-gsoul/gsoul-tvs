@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef  } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges  } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -14,7 +14,7 @@ import { TvService } from '../../../core/services/tv.service'
   styleUrl: './tvs-preview.component.css'
 })
 
-export class TvsPreviewComponent {
+export class TvsPreviewComponent implements OnChanges {
   @Input({ required: true }) selectedTv?: TvType
   @Input({ required: true }) tv!: TvType;
   @Output() edit = new EventEmitter()
@@ -27,7 +27,17 @@ export class TvsPreviewComponent {
 
   editingName = false;
   editedName: string = '';
+
   @ViewChild('nameInput') nameInputRef!: ElementRef<HTMLInputElement>;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedTv'] && this.selectedTv?.tv_id === this.tv.tv_id) {
+      this.startEditingTitle();
+      setTimeout(() => {
+        this.nameInputRef?.nativeElement.select();
+      });
+    }
+  }
 
   startEditingTitle() {
     this.editingName = true;

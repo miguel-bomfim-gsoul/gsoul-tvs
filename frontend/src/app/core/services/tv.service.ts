@@ -18,6 +18,7 @@ export interface RelatedTv {
 
 export interface CreateTvResponse {
   status: string;
+  tv_id: number
 }
 
 @Injectable({
