@@ -13,6 +13,7 @@ export interface TvType {
 export interface RelatedTv {
   tv_id: number
   media_order: number
+  name: string
 }
 
 export interface CreateTvResponse {

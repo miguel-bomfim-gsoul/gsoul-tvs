@@ -114,6 +114,7 @@ onCheckboxChange(event: MatCheckboxChange, tvOption: any) {
             this.dialogRef.close();
           },
           error: (error) => {
+            this.dialogRef.close();
             console.error('Error adding TV:', error);
           }
       });

@@ -41,9 +41,19 @@
         <ng-container matColumnDef="tvs">
             <th mat-header-cell *matHeaderCellDef> TVs Relacionadas </th>
             <td mat-cell *matCellDef="let item">
-            <button class="related-tvs-button" [class.button-disabled]="getTvCount(item) <= 0" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
-                {{ getTvCount(item) }}
-            </button>
+                <div [class.related-tvs-section]="item.related_tvs.length > 0">
+                  @if(item.related_tvs.length > 0) {
+                    <ul class="related-tvs-list"> 
+                      @for(related_tv of item.related_tvs;  track related_tv.tv_id) { 
+                        <li><p>{{ related_tv.name }}</p></li>
+                      }
+                      
+                    </ul>
+                  }
+                  <button [class.not-related]="item.related_tvs.length <= 0" class="related-tvs-button" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
+                    {{ getTvCount(item) }}
+                  </button>
+                </div>
             </td>
         </ng-container>
 

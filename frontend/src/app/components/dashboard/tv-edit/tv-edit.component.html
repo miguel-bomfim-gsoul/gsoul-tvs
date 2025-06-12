@@ -55,17 +55,26 @@
               <th mat-header-cell *matHeaderCellDef> Nome </th>
               <td mat-cell *matCellDef="let item"> {{ item.media_name }} </td>
             </ng-container>
-  
-            <!-- Duration Column -->
-            <ng-container matColumnDef="duration">
-              <th mat-header-cell *matHeaderCellDef>
-                <span class="duration-column">
-                  Duração
-                </span>
-              </th>
-              <td mat-cell *matCellDef="let item"> {{ item.duration_seconds }}s </td>
+
+            <!-- TVs Column -->
+            <ng-container matColumnDef="tvs">
+              <th mat-header-cell *matHeaderCellDef> TVs Relacionadas </th>
+              <td mat-cell *matCellDef="let item">
+                <div [class.related-tvs-section]="item.related_tvs.length > 0">
+                  @if(item.related_tvs.length > 0) {
+                    <ul class="related-tvs-list"> 
+                      @for(related_tv of item.related_tvs;  track related_tv.tv_id) { 
+                        <li><p>{{ related_tv.name }}</p></li>
+                      }
+                    </ul>
+                  }
+                  <button [class.not-related]="item.related_tvs.length <= 0" class="related-tvs-button" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
+                    {{ getTvCount(item) }}
+                  </button>
+                </div>
+              </td>
             </ng-container>
-  
+
             <!-- Dates Column -->
             <ng-container matColumnDef="dates">
               <th mat-header-cell *matHeaderCellDef> Período de exibição </th>
@@ -92,16 +101,6 @@
                     <mat-date-range-picker #picker></mat-date-range-picker>
                   </mat-form-field>
                 </div>
-              </td>
-            </ng-container>
-  
-            <!-- TVs Column -->
-            <ng-container matColumnDef="tvs">
-              <th mat-header-cell *matHeaderCellDef> TVs Relacionadas </th>
-              <td mat-cell *matCellDef="let item">
-                <button class="related-tvs-button" mat-mini-fab color="primary" (click)="openRelatedTvDialog(item)" matTooltip="Nº de TVs">
-                  {{ getTvCount(item) }}
-                </button>
               </td>
             </ng-container>
   

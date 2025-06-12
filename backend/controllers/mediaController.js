@@ -100,8 +100,6 @@ export async function addMultipleMediaToTv(req, res) {
 export async function addMultipleMedia(req, res) {
   const { fileNames } = req.body;
 
-  console.log('filesNames', fileNames)
-
   if (!Array.isArray(fileNames) || fileNames.length === 0) {
     return res.status(400).json({ error: 'No file names provided' });
   }
@@ -121,40 +119,89 @@ export async function addMultipleMedia(req, res) {
 }
 
 export async function relateMediaTv(req, res) {
-  let { media_id, tv_ids, unselectedTvsIds} = req.body;
-
+  let { media_id, tv_ids, unselectedTvsIds } = req.body;
   if (!Array.isArray(tv_ids)) {
-    tv_ids = tv_ids != null ? [ tv_ids ] : [];
+    tv_ids = tv_ids != null ? [tv_ids] : [];
   }
 
-  const values = [];
-  
-  for (const tvId of tv_ids) {
-    const [[{ nextOrder }]] = await db.query(
-      `SELECT COALESCE(MAX(media_order), 0) + 1 AS nextOrder FROM media_tv WHERE tv_id = ?`,
-      [tvId]
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const [[mediaExists]] = await connection.query(
+      `SELECT COUNT(*) AS count FROM media WHERE id = ?`,
+      [media_id]
     );
 
-    values.push([media_id, tvId, nextOrder]);
-  }
-
-  const placeholders = values.map(() => '(?, ?, ?)').join(', ');
-  const flatValues = values.flat();
-  try {
-    if (tv_ids.length > 0) {
-      await db.query(`INSERT IGNORE INTO media_tv (media_id, tv_id, media_order) VALUES ${placeholders}`, flatValues);
+    if (mediaExists.count === 0) {
+      await connection.rollback();
+      return res.status(400).json({ error: 'Mídia inexistente. dá um F5 aí :)' });
     }
+
+    // Buscar relacionamentos já existentes
+    const [existingRelations] = await connection.query(
+      `SELECT tv_id FROM media_tv WHERE media_id = ?`,
+      [media_id]
+    );
+    const existingTvIds = existingRelations.map(r => r.tv_id);
+
+    // Determinar quais são novas relações
+    const newTvIds = tv_ids.filter(tvId => !existingTvIds.includes(tvId));
+
+    // Inserir apenas os novos relacionamentos
+    const values = [];
+    for (const tvId of newTvIds) {
+      const [[{ nextOrder }]] = await connection.query(
+        `SELECT COALESCE(MAX(media_order), 0) + 1 AS nextOrder FROM media_tv WHERE tv_id = ?`,
+        [tvId]
+      );
+      values.push([media_id, tvId, nextOrder]);
+    }
+
+    if (values.length > 0) {
+      const placeholders = values.map(() => '(?, ?, ?)').join(', ');
+      const flatValues = values.flat();
+      await connection.query(
+        `INSERT INTO media_tv (media_id, tv_id, media_order) VALUES ${placeholders}`,
+        flatValues
+      );
+    }
+
+    // Deletar relações desmarcadas
     if (unselectedTvsIds.length > 0) {
       const placeholders = unselectedTvsIds.map(() => '?').join(', ');
-      const deleteQuery = `DELETE FROM media_tv WHERE media_id = ? AND tv_id IN (${placeholders})`;
-      await db.query(deleteQuery, [media_id, ...unselectedTvsIds]);
+      await connection.query(
+        `DELETE FROM media_tv WHERE media_id = ? AND tv_id IN (${placeholders})`,
+        [media_id, ...unselectedTvsIds]
+      );
+
+      // Reordenar as mídias para as TVs afetadas
+      for (const tvId of unselectedTvsIds) {
+        const [medias] = await connection.query(
+          `SELECT media_id FROM media_tv WHERE tv_id = ? ORDER BY media_order`,
+          [tvId]
+        );
+
+        for (let i = 0; i < medias.length; i++) {
+          await connection.query(
+            `UPDATE media_tv SET media_order = ? WHERE tv_id = ? AND media_id = ?`,
+            [i + 1, tvId, medias[i].media_id]
+          );
+        }
+      }
     }
+
+    await connection.commit();
     res.status(201).json();
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.status(500).json({ error: err.message });
+  } finally {
+    connection.release();
   }
 }
+
 
 export async function getMediaByTv(req, res) {
   const { tv_id } = req.params;

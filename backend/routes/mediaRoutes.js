@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import {
-  addMedia,
+  addMultipleMediaToTv,
   getAllMedias,
   getMediaByTv,
   updateMediaOrder,

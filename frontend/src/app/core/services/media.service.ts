@@ -64,8 +64,8 @@ export class MediaService {
     return this.api.post('media', mediaData);
   }
   
-  relateMediaTv(mediaTvData: MediaAddByTvType): Observable<void> {
-    return this.api.post<void>('media/relate', mediaTvData);
+  relateMediaTv(mediaTvData: MediaAddByTvType): Observable<any> {
+    return this.api.post<any>('media/relate', mediaTvData);
   }
   
   addMultipleMedia(fileNames: string[]): Observable<void> {

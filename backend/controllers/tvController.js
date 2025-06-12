@@ -77,7 +77,7 @@ export async function getRelatedTvs(req, res) {
   const { id } = req.params;
 
   try {
-    const [results] = await db.query('SELECT tv_id, media_order FROM media_tv WHERE media_id = ?', [id]);
+    const [results] = await db.query('SELECT tv_id, media_order, tvs.name FROM media_tv JOIN tvs ON media_tv.tv_id = tvs.id WHERE media_id = ?', [id]);
     res.json(results);
   } catch (err) {
     console.error(err);

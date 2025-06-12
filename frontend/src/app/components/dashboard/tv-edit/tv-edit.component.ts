@@ -52,7 +52,7 @@ export class TvEditComponent implements OnInit {
   selectedTv?: TvType
   related_tvs = signal<RelatedTv[]>([])
   mediaItems: MediaType[] | undefined = []
-  displayedColumns: string[] = ['order', 'thumbnail', 'name','tvs', 'duration' , 'dates', 'actions'];
+  displayedColumns: string[] = ['order', 'thumbnail', 'name', 'tvs', 'dates', 'actions'];
   dataSource = new MatTableDataSource<MediaType>([]);
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
@@ -95,7 +95,6 @@ export class TvEditComponent implements OnInit {
           name: validFiles[index].name,
           uploadedFileName: fileName,
           media_order: (this.mediaItems?.length ?? 0) + index + 1,
-          duration_seconds: 10
         }));
 
         this.mediaService.addMultipleMediaToTv({
@@ -205,6 +204,7 @@ loadMedias() {
   }
 
   openRelatedTvDialog(item: MediaType & { related_tvs?: RelatedTv[] }): void {
+    console.log('item', item)
     const dialogRef = this.dialog.open(RelatedTvDialogComponent, {
       width: '600px',
       data: { mediaId: item.media_id , relatedTvs: item.related_tvs ?? [] }

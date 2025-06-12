@@ -246,14 +246,14 @@ export class MidiasComponent implements OnInit  {
   }
 
   openRelatedTvDialog(item: MediasType & { related_tvs?: RelatedTv[] }): void {
-      const dialogRef = this.dialog.open(RelatedTvDialogComponent, {
-        width: '600px',
-        data: { mediaId: item.media_id , relatedTvs: item.related_tvs ?? [] }
-      });
-  
-      dialogRef.afterClosed().subscribe({
-        next: () => {this.loadMedias()}
-      });
+    const dialogRef = this.dialog.open(RelatedTvDialogComponent, {
+      width: '600px',
+      data: { mediaId: item.media_id , relatedTvs: item.related_tvs ?? [] }
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: () => {this.loadMedias()}
+    });
   }
 
   getTvCount(item: MediasType & { related_tvs?: RelatedTv[] }): number {

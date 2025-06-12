@@ -64,10 +64,49 @@ td, th {
   width: 80px;
 }
 
+.related-tvs-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+}
+
+.related-tvs-list{
+  display: grid;
+  font-size: 10px;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, auto);
+  column-gap: 10px; 
+  row-gap: 2px;
+}
+
+.related-tvs-list li:nth-child(n) { 
+  justify-self: center; /* Ensures items align to the left */
+}
+
+.related-tvs-list li {
+  background-color: #0d809c;
+  color: rgb(243, 243, 243);
+  border-radius: 16px;
+  padding: 2px 0px;
+}
+
+.related-tvs-list li p {
+  text-wrap-mode: nowrap;
+  padding: 0 6px;
+}
+
 .related-tvs-button {
-  background-color: rgb(127, 219, 127);
-  color: black;
+  background-color: rgb(6, 101, 117);
+  color: rgb(255, 255, 255);
+  font-weight: 600;
   box-shadow: 0px 0px 5px 3px rgba(197, 197, 197, 0.301);
+  border-radius: 50%;
+}
+
+.not-related {
+  background-color: rgb(173, 173, 173);
 }
 
 .related-tvs-button:hover {
