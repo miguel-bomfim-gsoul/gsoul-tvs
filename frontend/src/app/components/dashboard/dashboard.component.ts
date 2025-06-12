@@ -11,6 +11,8 @@ import { TvService, TvType } from '../../core/services/tv.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router'
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { TvDeleteDialogComponent } from './tv-delete-dialog/tv-delete-dialog.component'
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +20,7 @@ import { Router } from '@angular/router'
     TvsPreviewComponent,
     MatProgressSpinnerModule,
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     ReactiveFormsModule,
     MatInputModule,
@@ -44,7 +47,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     public authService: AuthGoogleService,
     private tvService: TvService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -121,18 +125,19 @@ export class DashboardComponent implements OnInit {
     this.searchControl.setValue('')
   }
 
-  onSelectTvDelete(id: string) {
-    this.createdTvId = 0
-    this.tvService.deleteTv(Number(id))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.loadTvs();
-        },
-        error: (error) => {
-          console.error('Error deleting TV:', error);
-          this.error.set('Something went wrong while deleting TV');
+  onOpenDeleteDialog(id: string) {
+    console.log('item', id)
+    const dialogRef = this.dialog.open(TvDeleteDialogComponent, {
+      width: '350px',
+      data: { tv_id: id }
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result?.deleted) {
+          this.loadTvs()
         }
-      });
+      }
+    });
   }
 }

@@ -1,0 +1,9 @@
+.delete-button {
+    color: red;
+    transition: 300ms;
+}
+
+.delete-button:hover {
+    background-color: rgb(255, 31, 31);
+    color: rgb(255, 253, 250);
+}
